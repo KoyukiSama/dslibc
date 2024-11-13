@@ -16,25 +16,25 @@ A library where I'll recreate datastructures that will be generically used.
 2. arraylist_free
 
 (setters)
-3. arraylist_set_end
-4. arraylist_set_start
-5. arraylist_set_insert
-6. arraylist_set_overwrite
+1. arraylist_set_end
+2. arraylist_set_start
+3. arraylist_set_insert
+4. arraylist_set_overwrite
 
 (removers)
-6. arraylist_remove_end
-7. arraylist_remove_start
-8. arraylist_remove_uninsert
+1. arraylist_remove_end
+2. arraylist_remove_start
+3. arraylist_remove_uninsert
 
 (getters)
-9.  arraylist_get_value
-10. arraylist_get_index
-11. arraylist_get_size
-12. arraylist_get_capacity
-13. arraylist_get_empty   // shows if arraylist is empty
+1.  arraylist_get_value
+2. arraylist_get_index
+3. arraylist_get_size
+4. arraylist_get_capacity
+5. arraylist_get_empty   // shows if arraylist is empty
 
 (internal helper function)
-14. arraylist_resize
+1. arraylist_resize
 
 SOON maybe also serealization
 
