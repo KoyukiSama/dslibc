@@ -20,6 +20,7 @@ A library where I'll recreate datastructures that will be generically used.
 6. arraylist_float_...,
 7. arraylist_double_...,
 8. arraylist_longdouble_...,
+9. arraylist_voidp_...
 
 (initialization and cleanup)
 1. arraylist_create
