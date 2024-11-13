@@ -3,13 +3,23 @@ A library where I'll recreate datastructures that will be generically used.
 
 ## Future datastructs:
 
-! I'll try to make all of these void pointers
+! I'll try to make all of these for all data types to reduce cache missallignment
 
 ### - ArrayList -
 1. capacity as initialization parameter
 2. Length in struct to check length
 3. RingBuffered under the hood to save memory
 4. Start ArrayList at 25% of the array capacity so that add_start will be O(1)
+
+(types of arraylist)
+1. arraylist_char_... , arraylist_uchar
+2. arraylist_short_..., arraylist_ushort
+3. arraylist_int_..., arraylist_uint
+4. arraylist_long_..., arraylist_ulong
+5. arraylist_longlong_..., arraylist_ulonglong
+6. arraylist_float_...,
+7. arraylist_double_...,
+8. arraylist_longdouble_...,
 
 (initialization and cleanup)
 1. arraylist_create
