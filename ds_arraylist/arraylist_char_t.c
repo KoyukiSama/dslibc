@@ -38,6 +38,12 @@ arraylist_char_t *arraylist_char_create(size_t capacity, char initial_value) {
     return ArrayList;
 }
 
+void arraylist_char_free(arraylist_char_t *ArrayList) {
+    free(ArrayList->list);
+    free(ArrayList);
+
+    return;
+}
 
 // memory helpers
 
