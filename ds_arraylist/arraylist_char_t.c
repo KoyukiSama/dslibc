@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stddef.h>
 
 typedef struct ArrayList_char {
     size_t length;
@@ -40,8 +41,8 @@ arraylist_char_t *arraylist_char_create(size_t capacity, char initial_value) {
     // initialize all vars
     ArrayList->length        = 0;
     ArrayList->capacity      = capacity;
-    ArrayList->index_start   = 0;
-    ArrayList->index_end     = 0;
+    ArrayList->index_start   = __SIZE_MAX__;
+    ArrayList->index_end     = __SIZE_MAX__;
     ArrayList->initial_value = initial_value;
 
     return ArrayList;
@@ -75,10 +76,35 @@ arraylist_char_t *arraylist_char_resize(arraylist_char_t *ArrayList) {
     return New_ArrayList;
 }
 
+
 //// setters ////
 
 // set end
+size_t arraylist_char_set_end(arraylist_char_t *ArrayList, char value) {
 
+    // check if resize needed
+    if (ArrayList->length == ArrayList->capacity) {
+        ArrayList = arraylist_char_resize(ArrayList);
+    }
+
+    // check if empty array
+    if (ArrayList->index_end == __SIZE_MAX__) {
+        ArrayList->index_end    = 0;
+        ArrayList->index_start  = 0;
+        ArrayList->length       = 1;
+        ArrayList->list[0]      = value;
+    }
+
+    // if not empty
+    else {
+        ArrayList->index_end    += 1;
+        ArrayList->length       += 1;
+        ArrayList->list[ArrayList->index_end] = value;
+    }
+
+    // return the index of the end,     since it's an array buffer, uses arraylist-length
+    return ArrayList->length - 1;
+}
 
 //// memory helpers
 
