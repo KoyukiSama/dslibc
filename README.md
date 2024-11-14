@@ -22,15 +22,18 @@ A library where I'll recreate datastructures that will be generically used.
 8. arraylist_longdouble_...,
 9. arraylist_voidp_...
 
+(printer function)
+1. arraylist_print
+
 (initialization and cleanup)
 1. arraylist_create
 2. arraylist_free
 
 (setters)
-1. arraylist_set_end
-2. arraylist_set_start
-3. arraylist_set_insert
-4. arraylist_set_overwrite
+1. arraylist_set_end        O(1) unless resize O(n)
+2. arraylist_set_start      O(1) unless resize O(n)
+3. arraylist_set_insert     O(n) unless resize O(n)  { O(2n) }
+4. arraylist_set_overwrite  O(1) unless resize O(n)
 
 (removers)
 1. arraylist_remove_end
