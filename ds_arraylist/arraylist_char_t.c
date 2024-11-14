@@ -16,13 +16,19 @@ typedef struct ArrayList_char {
 
 
 // prints all elements
-void arraylist_char_print(arraylist_char_t *ArrayList) {
+void arraylist_char_length_print(arraylist_char_t *ArrayList) {
     for (size_t i = 0; i < ArrayList->length; i++) {
         printf("%c ", ArrayList->list[(ArrayList->index_start + i) % ArrayList->capacity]);
     }
     printf("\n");
 }
 
+void arraylist_char_length_print(arraylist_char_t *ArrayList) {
+    for (size_t i = 0; i < ArrayList->capacity; i++) {
+        printf("%c ", ArrayList->list[(ArrayList->index_start + i) % ArrayList->capacity]);
+    }
+    printf("\n");
+}
 
 //// initialization and cleanup ////
 
@@ -57,18 +63,20 @@ void arraylist_char_free(arraylist_char_t *ArrayList) {
 }
 
 // resize arraylist
-arraylist_char_t *arraylist_char_resize(arraylist_char_t *ArrayList) {
+arraylist_char_t *arraylist_char_resize(arraylist_char_t *ArrayList, size_t add_factor) {
+
+    size_t new_capacity = ArrayList->capacity * 2 + add_factor;
 
     // initialize new arraylist
-    arraylist_char_t *New_ArrayList = arraylist_char_create((ArrayList->capacity * 2), ArrayList->initial_value);
+    arraylist_char_t *New_ArrayList = arraylist_char_create(new_capacity, ArrayList->initial_value);
 
     for (int i = 0; i < ArrayList->length; i++) {
-        New_ArrayList->list[i] = ArrayList->list[(ArrayList->index_start + i) % ArrayList->capacity];
+        New_ArrayList->list[(ArrayList->index_start + i) % ArrayList->capacity] = ArrayList->list[(ArrayList->index_start + i) % ArrayList->capacity];
     }
-    New_ArrayList->index_start   = 0;
-    New_ArrayList->index_end     = ArrayList->length - 1;
+    New_ArrayList->index_start   = ArrayList->index_start;
+    New_ArrayList->index_end     = ArrayList->index_end;
     New_ArrayList->length        = ArrayList->length;
-    New_ArrayList->capacity      = ArrayList->capacity * 2;
+    New_ArrayList->capacity      = new_capacity;
     New_ArrayList->initial_value = ArrayList->initial_value;
 
     arraylist_char_free(ArrayList);
@@ -84,11 +92,11 @@ size_t arraylist_char_set_end(arraylist_char_t *ArrayList, char value) {
 
     // check if resize needed
     if (ArrayList->length == ArrayList->capacity) {
-        ArrayList = arraylist_char_resize(ArrayList);
+        ArrayList = arraylist_char_resize(ArrayList, 0);
     }
 
     // check if empty array
-    if (ArrayList->index_end == __SIZE_MAX__) {
+    if (ArrayList->length == 0) {
         ArrayList->index_end    = 0;
         ArrayList->index_start  = 0;
         ArrayList->length       = 1;
@@ -97,13 +105,39 @@ size_t arraylist_char_set_end(arraylist_char_t *ArrayList, char value) {
 
     // if not empty
     else {
-        ArrayList->index_end    += 1;
+        ArrayList->index_end     = (ArrayList->index_end + 1) % ArrayList->capacity;
         ArrayList->length       += 1;
         ArrayList->list[ArrayList->index_end] = value;
     }
 
     // return the index of the end,     since it's an array buffer, uses arraylist-length
     return ArrayList->length - 1;
+}
+
+// set start
+void arraylist_char_set_start(arraylist_char_t *ArrayList, char value) {
+
+    // check if resize needed
+    if (ArrayList->length == ArrayList->capacity) {
+        ArrayList = arraylist_char_resize(ArrayList, 0);
+    }
+
+    // check if empty array
+    if (ArrayList->length == 0) {
+        ArrayList->index_end    = 0;
+        ArrayList->index_start  = 0;
+        ArrayList->length       = 1;
+        ArrayList->list[0]      = value;
+    }
+
+    // if not empty
+    else {
+        ArrayList->index_start   = (ArrayList->index_start - 1 + ArrayList->capacity) % ArrayList->capacity;
+        ArrayList->length       += 1;
+        ArrayList->list[ArrayList->index_start] = value;
+    }
+
+    return; // returns nothing because start will always be 0
 }
 
 //// memory helpers
