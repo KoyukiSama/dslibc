@@ -33,10 +33,10 @@ use arraylist_get_length or arraylist->length
 2. arraylist_free
 
 (setters)
-1. arraylist_set_end        O(1) unless resize O(n)
-2. arraylist_set_start      O(1) unless resize O(n)
-3. arraylist_set_insert     O(n) unless resize O(n)  { O(2n) }
-4. arraylist_set_overwrite  O(1) unless resize O(n)
+1. arraylist_set_append        O(1) unless resize O(n)
+2. arraylist_set_prepend      O(1) unless resize O(n)
+3. arraylist_set_insert_at     O(n) unless resize O(n)  { O(2n) }
+4. arraylist_set_overwrite_at  O(1) unless resize O(n)
 
 (removers)
 1. arraylist_remove_end
