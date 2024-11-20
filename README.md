@@ -6,10 +6,7 @@ A library where I'll recreate datastructures that will be generically used.
 ! I'll try to make all of these for all data types to reduce cache missallignment
 
 ### - ArrayList -
-1. capacity as initialization parameter
-2. Length in struct to check length
-3. RingBuffered under the hood to save memory
-4. Start ArrayList at 25% of the array capacity so that add_start will be O(1)
+1. initialization parameter, resizing in a negative manner option
 
 DONT USE arraylist->index_tail or index_start, these should be private and work with a ring buffer,
 use arraylist_get_length or arraylist->length
@@ -33,19 +30,20 @@ use arraylist_get_length or arraylist->length
 2. arraylist_free
 
 (setters)
-1. arraylist_set_append        O(1) unless resize O(n)
-2. arraylist_set_prepend      O(1) unless resize O(n)
-3. arraylist_set_insert_at     O(n) unless resize O(n)  { O(2n) }
-4. arraylist_set_overwrite_at  O(1) unless resize O(n)
+1. arraylist_set_append             O(1) unless resize O(n)
+2. arraylist_set_prepend            O(1) unless resize O(n)
+3. arraylist_set_insert_at          O(n) unless resize O(n)  { O(2n) }
+4. arraylist_set_overwrite_at       O(1) unless resize O(n)
 
 (removers)
-1. arraylist_remove_end
-2. arraylist_remove_start
-3. arraylist_remove_uninsert
+1. arraylist_remove_append          (removes last element)
+2. arraylist_remove_prepend         (removes first element)
+3. arraylist_remove_insert_at       (will remove in an uninsert manner)
+4. arraylist_remove_overwrite_at    (will overwrite with initial value)
 
 (getters)
-1. arraylist_get_value
-2. arraylist_get_index
+1. arraylist_get_value_at
+2. arraylist_get_index_of
 3. arraylist_get_length
 4. arraylist_get_capacity
 5. arraylist_get_empty   // shows if arraylist is empty
