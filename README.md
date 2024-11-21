@@ -23,17 +23,19 @@ use arraylist_get_length or arraylist->length
 9. arraylist_voidp_...
 
 (printer function)
-1. arraylist_print
+1. arraylist_print_length
+2. arraylist_print_capacity
+3. arraylist_print_debug
 
 (initialization and cleanup)
 1. arraylist_create
 2. arraylist_free
 
 (setters)
-1. arraylist_set_append             O(1) unless resize O(n)
-2. arraylist_set_prepend            O(1) unless resize O(n)
-3. arraylist_set_insert_at          O(n) unless resize O(n)  { O(2n) }
-4. arraylist_set_overwrite_at       O(1) unless resize O(n)
+1. arraylist_set_append             O(1)   unless resize O(n)
+2. arraylist_set_prepend            O(1)   unless resize O(n)
+3. arraylist_set_insert_at          O(n/2) unless resize O(n)
+4. arraylist_set_overwrite_at       O(1)   unless resize O(n)
 
 (removers)
 1. arraylist_remove_append          (removes last element)
@@ -46,7 +48,6 @@ use arraylist_get_length or arraylist->length
 2. arraylist_get_index_of
 3. arraylist_get_length
 4. arraylist_get_capacity
-5. arraylist_get_empty   // shows if arraylist is empty
 
 (internal helper function)
 1. arraylist_resize

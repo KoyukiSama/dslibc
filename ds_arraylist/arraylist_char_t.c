@@ -17,6 +17,7 @@ typedef struct ArrayList_char {
     size_t index_start;
     size_t index_end;
 
+    char shrinkable;
     char initial_value;
     char *list;
 } arraylist_char_t;
@@ -157,8 +158,9 @@ void arraylist_char_debug_print(arraylist_char_t *ArrayList, char option) {
 
 //// initialization and cleanup ////
 
+// shrinkable -> shrinkable > 0
 // create arraylist
-arraylist_char_t *arraylist_char_create(size_t length, char initial_value, size_t capacity) {
+arraylist_char_t *arraylist_char_create(size_t length, char initial_value, size_t capacity, char shrinkable) {
     if (length > capacity) {
         length = capacity;
     }
@@ -188,6 +190,7 @@ arraylist_char_t *arraylist_char_create(size_t length, char initial_value, size_
         ArrayList->index_end   = length - 1;
     }
     ArrayList->initial_value   = initial_value;
+    ArrayList->shrinkable      = shrinkable;
 
     return ArrayList;
 }
@@ -201,12 +204,12 @@ void arraylist_char_free(arraylist_char_t *ArrayList) {
 }
 
 // resize arraylist
-void arraylist_char_resize(arraylist_char_t **ArrayList, size_t add_factor) {
+void arraylist_char_resize(arraylist_char_t **ArrayList, double growth_factor, size_t add_factor) {
 
-    size_t new_capacity = (*ArrayList)->capacity * 2 + add_factor;
+    size_t new_capacity = (*ArrayList)->capacity * growth_factor + add_factor;
 
     // initialize new arraylist
-    arraylist_char_t *New_ArrayList = arraylist_char_create((*ArrayList)->length, (*ArrayList)->initial_value, new_capacity);
+    arraylist_char_t *New_ArrayList = arraylist_char_create((*ArrayList)->length, (*ArrayList)->initial_value, new_capacity, (*ArrayList)->shrinkable);
 
     for (size_t i = 0; i < (*ArrayList)->length; i++) {
         New_ArrayList->list[i] = (*ArrayList)->list[((*ArrayList)->index_start + i) % (*ArrayList)->capacity];
@@ -230,7 +233,7 @@ size_t arraylist_char_set_append(arraylist_char_t **ArrayList, char value) {
 
     // check if resize needed
     if ((*ArrayList)->length == (*ArrayList)->capacity) {
-        arraylist_char_resize(ArrayList, 0);
+        arraylist_char_resize(ArrayList, 2, 0);
     }
 
     // check if empty array
@@ -257,7 +260,7 @@ size_t arraylist_char_set_prepend(arraylist_char_t **ArrayList, char value) {
 
     // check if resize needed
     if ((*ArrayList)->length == (*ArrayList)->capacity) {
-        arraylist_char_resize(ArrayList, 0);
+        arraylist_char_resize(ArrayList, 2, 0);
     }
 
     // check if empty array
@@ -285,7 +288,7 @@ ssize_t arraylist_char_set_insert_at(arraylist_char_t **ArrayList, ssize_t index
 
         // check if resize needed
         if ((*ArrayList)->length == (*ArrayList)->capacity) {
-            arraylist_char_resize(ArrayList, index);
+            arraylist_char_resize(ArrayList, 2, index);
         }
 
         // sliding window
@@ -298,8 +301,9 @@ ssize_t arraylist_char_set_insert_at(arraylist_char_t **ArrayList, ssize_t index
         if ((size_t)index < ((*ArrayList)->length / 2)) {
             (*ArrayList)->index_start = (((*ArrayList)->index_start) - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
             size_t i                  = (index + (*ArrayList)->index_start) % (*ArrayList)->capacity;
+            size_t condition          = ((*ArrayList)->index_start - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
 
-            while (i != (*ArrayList)->index_start - 1) {
+            while (i != condition) {
 
                 temp_in = (*ArrayList)->list[i];
                 (*ArrayList)->list[i] = temp_out;
@@ -312,11 +316,12 @@ ssize_t arraylist_char_set_insert_at(arraylist_char_t **ArrayList, ssize_t index
 
         // if shove to the right
         else {
-            (*ArrayList)->index_end += 1;
+            (*ArrayList)->index_end = ((*ArrayList)->index_end + 1) % (*ArrayList)->capacity;
             // ( i - gap + capacity ) % capacity
-            size_t i = (((index + (*ArrayList)->index_start) % (*ArrayList)->capacity));
+            size_t i                = (((index + (*ArrayList)->index_start) % (*ArrayList)->capacity));
+            size_t condition        = ((*ArrayList)->index_end + 1) % (*ArrayList)->capacity;
 
-            while (i < (*ArrayList)->length) {
+            while (i != condition) {
                 temp_in = (*ArrayList)->list[i];
                 (*ArrayList)->list[i] = temp_out;
                 temp_out = temp_in;
@@ -344,7 +349,7 @@ size_t arraylist_char_set_overwrite_at(arraylist_char_t **ArrayList, ssize_t ind
         
         // check if resize needed
         if ((size_t)index >= (*ArrayList)->capacity) {
-            arraylist_char_resize(ArrayList, index);
+            arraylist_char_resize(ArrayList, 2, index);
         }
 
         // check if empty
@@ -373,7 +378,7 @@ size_t arraylist_char_set_overwrite_at(arraylist_char_t **ArrayList, ssize_t ind
 
         // check if resize needed
         if ((size_t)(index * -1) + (*ArrayList)->length > (*ArrayList)->capacity) {
-            arraylist_char_resize(ArrayList, index * -1);
+            arraylist_char_resize(ArrayList, 2, index * -1);
         }
 
         // check if empty
@@ -395,6 +400,136 @@ size_t arraylist_char_set_overwrite_at(arraylist_char_t **ArrayList, ssize_t ind
     return (*ArrayList)->length; // returns new length
 }
 
+//// remove functions
+
+// remove appended
+size_t arraylist_char_remove_append(arraylist_char_t **ArrayList) {
+
+    // check if downsize is needed
+    if ((*ArrayList)->shrinkable > 0 && (*ArrayList)->capacity > 5 && (*ArrayList)->length <= ((*ArrayList)->capacity / 3)) {
+        arraylist_char_resize(ArrayList, 0.5f, 0);
+    }
+
+    // remove appended
+    if ((*ArrayList)->length > 0) {
+        (*ArrayList)->length--;
+        (*ArrayList)->list[(*ArrayList)->index_end] = (*ArrayList)->initial_value;
+        if ((*ArrayList)->length != 0) {
+            (*ArrayList)->index_end = ((*ArrayList)->index_end - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
+        }
+    }
+
+    // check if empty
+    if ((*ArrayList)->length == 0) {
+        (*ArrayList)->index_end    = 0;
+        (*ArrayList)->index_start  = 0;
+    }
+
+    return (*ArrayList)->length;
+}
+
+// remove prepended
+size_t arraylist_char_remove_prepend(arraylist_char_t **ArrayList) {
+
+    // check if downsize is needed
+    if ((*ArrayList)->shrinkable > 0 && (*ArrayList)->capacity > 5 && (*ArrayList)->length <= ((*ArrayList)->capacity / 3)) {
+        arraylist_char_resize(ArrayList, 0.5f, 0);
+    }
+
+    // remove prepended
+    if ((*ArrayList)->length > 0) {
+        (*ArrayList)->length--;
+        (*ArrayList)->list[(*ArrayList)->index_start] = (*ArrayList)->initial_value;
+        if ((*ArrayList)->length != 0) {
+            (*ArrayList)->index_start = ((*ArrayList)->index_start + 1) % (*ArrayList)->capacity;
+        }
+    }
+
+    // check if empty
+    if ((*ArrayList)->length == 0) {
+        (*ArrayList)->index_end   = 0;
+        (*ArrayList)->index_start = 0;
+    }
+
+    return (*ArrayList)->length;
+}
+
+// remove insert at
+size_t arraylist_char_remove_insert_at(arraylist_char_t **ArrayList, size_t index) {
+
+    if (index < (*ArrayList)->length) {
+
+        // check if downsize is needed
+        if ((*ArrayList)->shrinkable > 0 && (*ArrayList)->capacity > 5 && (*ArrayList)->length <= ((*ArrayList)->capacity / 3)) {
+            arraylist_char_resize(ArrayList, 0.5f, 0);
+        }
+        // remove inserted at
+        if ((*ArrayList)->length > 0) {
+            (*ArrayList)->length--;
+            //char temp_in = 0;
+            size_t i        = 0;
+            size_t i_offset = 0;
+
+            // shove from left side
+            if (index < (*ArrayList)->length / 2) {
+
+                i = (index + (*ArrayList)->index_start) % (*ArrayList)->capacity;
+
+                while (i != (*ArrayList)->index_start) {
+                    i_offset = (i - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
+                    (*ArrayList)->list[i] = (*ArrayList)->list[i_offset];
+
+                    i = i_offset;
+                }
+                (*ArrayList)->list[i] = (*ArrayList)->initial_value;
+                (*ArrayList)->index_start = ((*ArrayList)->index_start + 1) % (*ArrayList)->capacity;
+            }
+
+            // shove from right side
+            else {
+                
+                i = (index + (*ArrayList)->index_start) % (*ArrayList)->capacity;
+
+                while (i != (*ArrayList)->index_end) {
+                    i_offset = (i + 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
+                    (*ArrayList)->list[i] = (*ArrayList)->list[i_offset];
+
+                    i = i_offset;
+                }
+                (*ArrayList)->list[i] = (*ArrayList)->initial_value;
+                (*ArrayList)->index_end = ((*ArrayList)->index_end - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
+            }
+        }
+    }
+
+    // check if empty
+    if ((*ArrayList)->length == 0) {
+        (*ArrayList)->index_end   = 0;
+        (*ArrayList)->index_start = 0;
+    }
+    
+    return (*ArrayList)->length;
+}
+
+// remove overwrite, defaults to initial value
+size_t arraylist_char_remove_overwrite_at(arraylist_char_t **ArrayList, size_t index) {
+    
+    // if at start or end, reroute
+    if (index == 0) {
+        arraylist_char_remove_prepend(ArrayList);
+    }
+    else if (index >= (*ArrayList)->length - 1) {
+        arraylist_char_remove_append(ArrayList);
+    }
+
+    // overwrite value with initial_value
+    else {
+        (*ArrayList)->list[(index + (*ArrayList)->index_start) % (*ArrayList)->capacity] = (*ArrayList)->initial_value;
+    }
+
+    return (*ArrayList)->length;
+}
+
 //// memory helpers
 
 void *malloc_wrapper(size_t size, const char* function_name) {
@@ -408,7 +543,7 @@ void *malloc_wrapper(size_t size, const char* function_name) {
 
 
 int main(void) {
-    arraylist_char_t *ArrayList = arraylist_char_create(0, '_', 10);
+    arraylist_char_t *ArrayList = arraylist_char_create(0, '_', 10, 1);
 
     // IS
     arraylist_char_set_prepend(&ArrayList, 'S');
@@ -433,30 +568,21 @@ int main(void) {
     arraylist_char_length_print(ArrayList, 0);
     // COOL
     arraylist_char_set_append(&ArrayList, 'C');
-    arraylist_char_debug_print(ArrayList, 1);
-    arraylist_char_length_print(ArrayList, 0);
-
-    arraylist_char_set_prepend(&ArrayList, 'I');
-    arraylist_char_set_prepend(&ArrayList, 'S');
-    arraylist_char_set_prepend(&ArrayList, 'S');
     arraylist_char_set_append(&ArrayList, 'O');
     arraylist_char_set_append(&ArrayList, 'O');
     arraylist_char_set_append(&ArrayList, 'L');
     arraylist_char_debug_print(ArrayList, 1);
     arraylist_char_length_print(ArrayList, 0);
+
+    arraylist_char_set_insert_at(&ArrayList, 10, '@');
+    arraylist_char_set_insert_at(&ArrayList, 14, '@');
+    arraylist_char_remove_insert_at(&ArrayList, 14);
+    arraylist_char_remove_insert_at(&ArrayList, 10);
+    arraylist_char_remove_overwrite_at(&ArrayList, 0);
+    //arraylist_char_remove_insert_at(&ArrayList, 10);
+
+    //arraylist_char_remove_overwrite_at(&ArrayList, );
     
-    arraylist_char_set_overwrite_at(&ArrayList, -3, '@');
-    arraylist_char_set_overwrite_at(&ArrayList, -1, '@');
-
-    arraylist_char_debug_print(ArrayList, 1);
-    arraylist_char_length_print(ArrayList, 0);
-    arraylist_char_set_overwrite_at(&ArrayList, -1, '@');
-
-    arraylist_char_debug_print(ArrayList, 1);
-    arraylist_char_length_print(ArrayList, 0);
-
-    arraylist_char_set_insert_at(&ArrayList, -1000000, '@');
-    arraylist_char_set_insert_at(&ArrayList, -1, '@');
 
     arraylist_char_debug_print(ArrayList, 1);
     arraylist_char_length_print(ArrayList, 0);
