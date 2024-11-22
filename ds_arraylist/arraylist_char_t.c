@@ -225,6 +225,14 @@ void arraylist_char_resize(arraylist_char_t **ArrayList, double growth_factor, s
     *ArrayList = New_ArrayList;
 }
 
+// convert arraylist, does what resizing does but without the resize
+void arraylist_char_convert(arraylist_char_t **ArrayList) {
+    for (size_t i = 0; i < (*ArrayList)->length; i++) {
+        (*ArrayList)->list[i] = (*ArrayList)->list[((*ArrayList)->index_start + i) % (*ArrayList)->capacity];
+    }
+
+    return;
+}
 
 //// setters ////
 

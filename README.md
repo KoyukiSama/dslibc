@@ -31,6 +31,7 @@ use arraylist_get_length or arraylist->length
 1. arraylist_create
 2. arraylist_free
 3. arraylist_reset
+4. arraylist_convert -> will convert the special arraylist to a normal for whatever reason you might need this
 
 (setters)
 1. arraylist_set_append             O(1)   unless resize O(n)
