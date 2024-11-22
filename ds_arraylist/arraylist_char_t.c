@@ -403,8 +403,11 @@ size_t arraylist_char_set_overwrite_at(arraylist_char_t **ArrayList, ssize_t ind
 
 //// remove functions
 
+// returns the removed value
 // remove appended
-size_t arraylist_char_remove_append(arraylist_char_t **ArrayList) {
+char arraylist_char_remove_append(arraylist_char_t **ArrayList) {
+
+    char removed_value = (*ArrayList)->list[(*ArrayList)->index_end];
 
     // check if downsize is needed
     if ((*ArrayList)->shrinkable > 0 && (*ArrayList)->capacity > 5 && (*ArrayList)->length <= ((*ArrayList)->capacity / 3)) {
@@ -426,12 +429,15 @@ size_t arraylist_char_remove_append(arraylist_char_t **ArrayList) {
         (*ArrayList)->index_start  = 0;
     }
 
-    return (*ArrayList)->length;
+    return removed_value;
 }
 
+// returns the removed value
 // remove prepended
-size_t arraylist_char_remove_prepend(arraylist_char_t **ArrayList) {
+char arraylist_char_remove_prepend(arraylist_char_t **ArrayList) {
 
+    char removed_value = (*ArrayList)->list[(*ArrayList)->index_start];
+    
     // check if downsize is needed
     if ((*ArrayList)->shrinkable > 0 && (*ArrayList)->capacity > 5 && (*ArrayList)->length <= ((*ArrayList)->capacity / 3)) {
         arraylist_char_resize(ArrayList, 0.5f, 0);
@@ -452,11 +458,13 @@ size_t arraylist_char_remove_prepend(arraylist_char_t **ArrayList) {
         (*ArrayList)->index_start = 0;
     }
 
-    return (*ArrayList)->length;
+    return removed_value;
 }
 
 // remove insert at
-size_t arraylist_char_remove_insert_at(arraylist_char_t **ArrayList, size_t index) {
+char arraylist_char_remove_insert_at(arraylist_char_t **ArrayList, size_t index) {
+
+    char removed_value = (*ArrayList)->list[(index + (*ArrayList)->index_start) % (*ArrayList)->capacity];
 
     if (index < (*ArrayList)->length) {
 
@@ -464,6 +472,7 @@ size_t arraylist_char_remove_insert_at(arraylist_char_t **ArrayList, size_t inde
         if ((*ArrayList)->shrinkable > 0 && (*ArrayList)->capacity > 5 && (*ArrayList)->length <= ((*ArrayList)->capacity / 3)) {
             arraylist_char_resize(ArrayList, 0.5f, 0);
         }
+
         // remove inserted at
         if ((*ArrayList)->length > 0) {
             (*ArrayList)->length--;
@@ -509,12 +518,14 @@ size_t arraylist_char_remove_insert_at(arraylist_char_t **ArrayList, size_t inde
         (*ArrayList)->index_start = 0;
     }
     
-    return (*ArrayList)->length;
+    return removed_value;
 }
 
 // remove overwrite, defaults to initial value
-size_t arraylist_char_remove_overwrite_at(arraylist_char_t **ArrayList, size_t index) {
+char arraylist_char_remove_overwrite_at(arraylist_char_t **ArrayList, size_t index) {
     
+    char removed_value = (*ArrayList)->list[(index + (*ArrayList)->index_start) % (*ArrayList)->capacity];
+
     // if at start or end, reroute
     if (index == 0) {
         arraylist_char_remove_prepend(ArrayList);
@@ -528,39 +539,98 @@ size_t arraylist_char_remove_overwrite_at(arraylist_char_t **ArrayList, size_t i
         (*ArrayList)->list[(index + (*ArrayList)->index_start) % (*ArrayList)->capacity] = (*ArrayList)->initial_value;
     }
 
-    return (*ArrayList)->length;
+    return removed_value;
+}
+
+// remove / resest the whole array
+void arraylist_char_reset(arraylist_char_t **ArrayList, size_t length, size_t capacity) {
+    *ArrayList = arraylist_char_create(length, (*ArrayList)->initial_value, capacity, (*ArrayList)->shrinkable);
+    return;
 }
 
 
 //// getters
 
 // get value at index
-char arraylist_char_get_value_at(arraylist_char_t *Arraylist, size_t index) {
-    if (index < Arraylist->length) {
-        return Arraylist->list[(index + Arraylist->index_start) % Arraylist->capacity];
+char arraylist_char_get_value_at(arraylist_char_t *ArrayList, size_t index) {
+    if (index < ArrayList->length) {
+        return ArrayList->list[(index + ArrayList->index_start) % ArrayList->capacity];
     }
 
     else return -1;
 }
 
 // get value at start index
-char arraylist_char_get_first_value(arraylist_char_t *Arraylist) {
-    return Arraylist->list[Arraylist->index_start];
+char arraylist_char_get_first_value(arraylist_char_t *ArrayList) {
+    return ArrayList->list[ArrayList->index_start];
 }
 
 // get value at end index
-char arraylist_char_get_last_value(arraylist_char_t *Arraylist) {
-    return Arraylist->list[Arraylist->index_end];
+char arraylist_char_get_last_value(arraylist_char_t *ArrayList) {
+    return ArrayList->list[ArrayList->index_end];
 }
 
 // get length of array
-size_t arraylist_char_get_length(arraylist_char_t *Arraylist) {
-    return Arraylist->length;
+size_t arraylist_char_get_length(arraylist_char_t *ArrayList) {
+    return ArrayList->length;
 }
 
 // get capacity of array
-size_t arraylist_char_get_capacity(arraylist_char_t *Arraylist) {
-    return Arraylist->capacity;
+size_t arraylist_char_get_capacity(arraylist_char_t *ArrayList) {
+    return ArrayList->capacity;
+}
+
+
+//// queue operations + ring buffer operations
+
+// enqueue
+size_t arraylist_char_enqueue(arraylist_char_t **ArrayList, char value) {
+    return arraylist_char_set_append(ArrayList, value);
+}
+
+// dequeue
+char arraylist_char_dequeue(arraylist_char_t **ArrayList) {
+    return arraylist_char_remove_prepend(ArrayList);
+}
+
+// peek at the start/head of the arraylist
+char arraylist_char_peek_head(arraylist_char_t *ArrayList) {
+    return arraylist_char_get_first_value(ArrayList);
+}
+
+// is full -> automatic resizing is always on but you can actually check this before adding to know if you're going to go over the capacity limit to resize
+// so if you want to use a strict capacity limit from the start, then use this.
+char arraylist_char_is_full(arraylist_char_t *ArrayList) {
+    if (ArrayList->length == ArrayList->capacity) {
+        return 1;
+    }
+    else return -1;
+}
+
+// is empty
+char arraylist_char_is_empty(arraylist_char_t *ArrayList) {
+    if (ArrayList->length == 0 && ArrayList->index_end == ArrayList->index_start) {
+        return 1;
+    }
+    else return -1;
+}
+
+
+//// stack operations
+
+// push
+size_t arraylist_char_push(arraylist_char_t **ArrayList, char value) {
+    return arraylist_char_set_append(ArrayList, value);
+}
+
+// pop
+char arraylist_char_pop(arraylist_char_t **ArrayList) {
+    return arraylist_char_remove_append(ArrayList);
+}
+
+// peek top
+char arraylist_char_peek_top(arraylist_char_t **ArrayList) {
+    return arraylist_char_get_last_value(ArrayList);
 }
 
 
