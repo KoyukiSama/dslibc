@@ -400,6 +400,7 @@ size_t arraylist_char_set_overwrite_at(arraylist_char_t **ArrayList, ssize_t ind
     return (*ArrayList)->length; // returns new length
 }
 
+
 //// remove functions
 
 // remove appended
@@ -530,6 +531,39 @@ size_t arraylist_char_remove_overwrite_at(arraylist_char_t **ArrayList, size_t i
     return (*ArrayList)->length;
 }
 
+
+//// getters
+
+// get value at index
+char arraylist_char_get_value_at(arraylist_char_t *Arraylist, size_t index) {
+    if (index < Arraylist->length) {
+        return Arraylist->list[(index + Arraylist->index_start) % Arraylist->capacity];
+    }
+
+    else return -1;
+}
+
+// get value at start index
+char arraylist_char_get_first_value(arraylist_char_t *Arraylist) {
+    return Arraylist->list[Arraylist->index_start];
+}
+
+// get value at end index
+char arraylist_char_get_last_value(arraylist_char_t *Arraylist) {
+    return Arraylist->list[Arraylist->index_end];
+}
+
+// get length of array
+size_t arraylist_char_get_length(arraylist_char_t *Arraylist) {
+    return Arraylist->length;
+}
+
+// get capacity of array
+size_t arraylist_char_get_capacity(arraylist_char_t *Arraylist) {
+    return Arraylist->capacity;
+}
+
+
 //// memory helpers
 
 void *malloc_wrapper(size_t size, const char* function_name) {
@@ -580,7 +614,8 @@ int main(void) {
     arraylist_char_remove_insert_at(&ArrayList, 10);
     //arraylist_char_remove_insert_at(&ArrayList, 10);
     
-    arraylist_char_set_insert_at(&ArrayList, -8, '@');
+    arraylist_char_set_insert_at(&ArrayList, -2, '@');
+    printf("%zu", arraylist_char_get_capacity(ArrayList));
 
     //arraylist_char_remove_overwrite_at(&ArrayList, );
     
