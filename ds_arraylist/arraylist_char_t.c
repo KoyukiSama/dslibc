@@ -578,8 +578,9 @@ int main(void) {
     arraylist_char_set_insert_at(&ArrayList, 14, '@');
     arraylist_char_remove_insert_at(&ArrayList, 14);
     arraylist_char_remove_insert_at(&ArrayList, 10);
-    arraylist_char_remove_overwrite_at(&ArrayList, 0);
     //arraylist_char_remove_insert_at(&ArrayList, 10);
+    
+    arraylist_char_set_insert_at(&ArrayList, -8, '@');
 
     //arraylist_char_remove_overwrite_at(&ArrayList, );
     

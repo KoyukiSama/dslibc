@@ -45,9 +45,16 @@ use arraylist_get_length or arraylist->length
 
 (getters)
 1. arraylist_get_value_at
-2. arraylist_get_index_of
-3. arraylist_get_length
-4. arraylist_get_capacity
+3. arraylist_get_first_value
+4. arraylist_get_last_value
+5. arraylist_get_length
+6. arraylist_get_capacity
+
+(searches)
+1. linear search for index
+2. binary search for index
+3. iterative Search for index
+4. linear search for index structs
 
 (internal helper function)
 1. arraylist_resize
@@ -56,7 +63,16 @@ SOON maybe also serealization
 
 
 ### - LinkedList -
+no need anymore since my arraylist beats a linked list
 
-### - Hashmap -
+### - Stack -
+no need anymore since my arraylist is also a stack.
+I'll include operations for stacks in my arraylist same for queue.
+
+### - Queue
+look at stack
 
 ### - RingBuffer -
+no need anymore since my arraylist works as a flawless ring buffer
+
+### - Hashmap -
