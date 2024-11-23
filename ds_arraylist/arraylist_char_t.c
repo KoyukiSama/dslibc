@@ -677,46 +677,32 @@ void *malloc_wrapper(size_t size, const char* function_name) {
 int main(void) {
     
     size_t n_inserts = 100000000;
-    double time_spent_front = 0;
-    double time_spent_back  = 0;
-    double time_spent_first_quart = 0;
-    double time_spent_third_quart = 0;
+    double time_spent = 0;
 
     katarray_char_t *KatArray = katarray_char_create(0, '_', 5, 1);
 
+    clock_t start = clock();
+    clock_t end   = clock();
+
     for (size_t i = 0; i < n_inserts/4; i++) {
-        clock_t start_front = clock();
+
+        // prepend
         katarray_char_set_prepend(&KatArray, '@');
-        clock_t end_front = clock();
-        time_spent_front = (double)(end_front - start_front) / CLOCKS_PER_SEC;
 
-        printf("Time for %zu / %zu insert at the ---front: %f seconds\n", i, n_inserts, time_spent_front);
-
-
-        clock_t start_back = clock();
+        // append
         katarray_char_set_append(&KatArray, 'D');
-        clock_t end_back = clock();
-        time_spent_back = (double)(end_back - start_back) / CLOCKS_PER_SEC;
 
-        printf("Time for %zu / %zu insert at the ----back: %f seconds\n", i + 1, n_inserts, time_spent_back);
-
-
-        clock_t start_insert_first_quart = clock();
+        // insert at 1/4
         katarray_char_set_insert_at(&KatArray, '0', i/4);
-        clock_t end_insert_first_quart = clock();
-        time_spent_first_quart = (double)(end_insert_first_quart - start_insert_first_quart) / CLOCKS_PER_SEC;
 
-        printf("Time for %zu / %zu insert at ---------i/4: %f seconds\n", i + 2, n_inserts, time_spent_first_quart);
-
-
-        clock_t start_insert_third_quart = clock();
+        // insert at 3/4
         katarray_char_set_insert_at(&KatArray, 'D', (i/4)*3);
-        clock_t end_insert_third_quart = clock();
-        time_spent_third_quart = (double)(end_insert_third_quart - start_insert_third_quart) / CLOCKS_PER_SEC;
 
-        printf("Time for %zu / %zu insert at ---------i/4: %f seconds\n", i + 3, n_inserts, time_spent_third_quart);
     }
 
+    time_spent = (double)(end - start) / CLOCKS_PER_SEC;
+
+    printf("Time for %zu : %f seconds\n", n_inserts, time_spent);
 
     katarray_char_free(KatArray);
 
