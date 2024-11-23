@@ -4,13 +4,18 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <stdio.h>
+#include <time.h>
+
+
+
 #define GRAY "\033[38;5;8m"
 #define GREEN "\033[38;5;2m"
 #define ORANGE "\033[38;5;214m"
 #define RED "\033[38;5;1m"
 #define END "\033[0m"
 
-typedef struct ArrayList_char {
+typedef struct Katarray_char {
     size_t length;
     size_t capacity;
 
@@ -20,21 +25,21 @@ typedef struct ArrayList_char {
     char shrinkable;
     char initial_value;
     char *list;
-} arraylist_char_t;
+} katarray_char_t;
 
 
-size_t arraylist_char_set_overwrite_at(arraylist_char_t **ArrayList, ssize_t index, char value);
+size_t katarray_char_set_overwrite_at(katarray_char_t **KatArray, ssize_t index, char value);
 void *malloc_wrapper(size_t size, const char* function_name);
 
 // prints all elements
 // if option > 0: then display index.
-void arraylist_char_length_print(arraylist_char_t *ArrayList, char option) {
+void katarray_char_length_print(katarray_char_t *KatArray, char option) {
     if (option > 0) {
         // index
         printf(GRAY" ");
-        for (size_t i = 0; i < ArrayList->length; i++) {
+        for (size_t i = 0; i < KatArray->length; i++) {
             printf(" %zu", i);
-            if (i < ArrayList->length - 1) {
+            if (i < KatArray->length - 1) {
                 printf(" ");
             }
         }
@@ -42,9 +47,9 @@ void arraylist_char_length_print(arraylist_char_t *ArrayList, char option) {
 
         // list
         printf("[");
-        for (size_t i = 0; i < ArrayList->length; i++) {
-            printf(" %c", ArrayList->list[(ArrayList->index_start + i) % ArrayList->capacity]);
-            if (i < ArrayList->length - 1) {
+        for (size_t i = 0; i < KatArray->length; i++) {
+            printf(" %c", KatArray->list[(KatArray->index_start + i) % KatArray->capacity]);
+            if (i < KatArray->length - 1) {
                 printf(",");
             }
         }
@@ -52,9 +57,9 @@ void arraylist_char_length_print(arraylist_char_t *ArrayList, char option) {
     }
     else {
         printf("[");
-        for (size_t i = 0; i < ArrayList->length; i++) {
-            printf(" %c", ArrayList->list[(ArrayList->index_start + i) % ArrayList->capacity]);
-            if (i < ArrayList->length - 1) {
+        for (size_t i = 0; i < KatArray->length; i++) {
+            printf(" %c", KatArray->list[(KatArray->index_start + i) % KatArray->capacity]);
+            if (i < KatArray->length - 1) {
                 printf(",");
             }
         }
@@ -65,13 +70,13 @@ void arraylist_char_length_print(arraylist_char_t *ArrayList, char option) {
     return;
 }
 
-void arraylist_char_capacity_print(arraylist_char_t *ArrayList, char option) {
+void katarray_char_capacity_print(katarray_char_t *KatArray, char option) {
     if (option > 0) {
         // index
         printf(GRAY" ");
-        for (size_t i = 0; i < ArrayList->capacity; i++) {
+        for (size_t i = 0; i < KatArray->capacity; i++) {
             printf(" %zu", i);
-            if (i < ArrayList->capacity - 1) {
+            if (i < KatArray->capacity - 1) {
                 printf(" ");
             }
         }
@@ -79,9 +84,9 @@ void arraylist_char_capacity_print(arraylist_char_t *ArrayList, char option) {
 
         // list
         printf("[");
-        for (size_t i = 0; i < ArrayList->capacity; i++) {
-            printf(" %c", ArrayList->list[(ArrayList->index_start + i) % ArrayList->capacity]);
-            if (i < ArrayList->capacity - 1) {
+        for (size_t i = 0; i < KatArray->capacity; i++) {
+            printf(" %c", KatArray->list[(KatArray->index_start + i) % KatArray->capacity]);
+            if (i < KatArray->capacity - 1) {
                 printf(",");
             }
         }
@@ -89,9 +94,9 @@ void arraylist_char_capacity_print(arraylist_char_t *ArrayList, char option) {
     }
     else {
         printf("[");
-        for (size_t i = 0; i < ArrayList->capacity; i++) {
-            printf(" %c", ArrayList->list[(ArrayList->index_start + i) % ArrayList->capacity]);
-            if (i < ArrayList->capacity - 1) {
+        for (size_t i = 0; i < KatArray->capacity; i++) {
+            printf(" %c", KatArray->list[(KatArray->index_start + i) % KatArray->capacity]);
+            if (i < KatArray->capacity - 1) {
                 printf(",");
             }
         }
@@ -101,14 +106,14 @@ void arraylist_char_capacity_print(arraylist_char_t *ArrayList, char option) {
     return;
 }
 
-void arraylist_char_debug_print(arraylist_char_t *ArrayList, char option) {
+void katarray_char_debug_print(katarray_char_t *KatArray, char option) {
     if (option > 0) {
-        size_t index_start = ArrayList->index_start;
-        size_t index_end   = ArrayList->index_end;
+        size_t index_start = KatArray->index_start;
+        size_t index_end   = KatArray->index_end;
 
         // index
         fprintf(stderr, GRAY);
-        for (size_t i = 0; i < ArrayList->capacity; i++) {
+        for (size_t i = 0; i < KatArray->capacity; i++) {
             if (i > 9) {
                 fprintf(stderr, " %zu", i);
             } else {
@@ -120,23 +125,23 @@ void arraylist_char_debug_print(arraylist_char_t *ArrayList, char option) {
 
         // list
         fprintf(stderr, "[");
-        for (size_t i = 0; i < ArrayList->capacity; i++) {
+        for (size_t i = 0; i < KatArray->capacity; i++) {
             // color picking for index start and index end
             if (i == index_start && i == index_end) {
-                fprintf(stderr, ORANGE" %c"END, ArrayList->list[i]);
+                fprintf(stderr, ORANGE" %c"END, KatArray->list[i]);
             }
             else if (i == index_start) {
-                fprintf(stderr, GREEN" %c"END, ArrayList->list[i]);
+                fprintf(stderr, GREEN" %c"END, KatArray->list[i]);
             }
             else if (i == index_end) {
-                fprintf(stderr, RED" %c"END, ArrayList->list[i]);
+                fprintf(stderr, RED" %c"END, KatArray->list[i]);
             }
             else {
-                fprintf(stderr, " %c", ArrayList->list[i]);
+                fprintf(stderr, " %c", KatArray->list[i]);
             }
 
             // print comma
-            if (i < ArrayList->capacity - 1) {
+            if (i < KatArray->capacity - 1) {
                 fprintf(stderr, ",");
             }
         }
@@ -144,9 +149,9 @@ void arraylist_char_debug_print(arraylist_char_t *ArrayList, char option) {
     }
     else {
         fprintf(stderr, "[");
-        for (size_t i = 0; i < ArrayList->capacity; i++) {
-            fprintf(stderr, " %c", ArrayList->list[i]);
-            if (i < ArrayList->capacity - 1) {
+        for (size_t i = 0; i < KatArray->capacity; i++) {
+            fprintf(stderr, " %c", KatArray->list[i]);
+            if (i < KatArray->capacity - 1) {
                 fprintf(stderr, ",");
             }
         }
@@ -160,7 +165,7 @@ void arraylist_char_debug_print(arraylist_char_t *ArrayList, char option) {
 
 // shrinkable -> shrinkable > 0
 // create arraylist
-arraylist_char_t *arraylist_char_create(size_t length, char initial_value, size_t capacity, char shrinkable) {
+katarray_char_t *katarray_char_create(size_t length, char initial_value, size_t capacity, char shrinkable) {
     if (length > capacity) {
         length = capacity;
     }
@@ -170,66 +175,80 @@ arraylist_char_t *arraylist_char_create(size_t length, char initial_value, size_
     if (length <= 0) {
         length = 0;
     }
-    // malloc the ArrayList struct
-    arraylist_char_t *ArrayList = malloc_wrapper(sizeof(*ArrayList), __func__);
+    // malloc the KatArray struct
+    katarray_char_t *KatArray = malloc_wrapper(sizeof(*KatArray), __func__);
 
-    // malloc the ArrayList->list with capacity
-    ArrayList->list = malloc_wrapper(capacity * sizeof(*(ArrayList->list)), __func__);
+    // malloc the KatArray->list with capacity
+    KatArray->list = malloc_wrapper(capacity * sizeof(*(KatArray->list)), __func__);
 
     // memset list to initial_value
-    memset(ArrayList->list, initial_value, capacity * sizeof(*(ArrayList->list)));
+    memset(KatArray->list, initial_value, capacity * sizeof(*(KatArray->list)));
 
     // initialize all vars
-    ArrayList->length          = length;
-    ArrayList->capacity        = capacity;
+    KatArray->length          = length;
+    KatArray->capacity        = capacity;
     if (length == 0) {
-        ArrayList->index_start = __SIZE_MAX__;
-        ArrayList->index_end   = __SIZE_MAX__;
+        KatArray->index_start = __SIZE_MAX__;
+        KatArray->index_end   = __SIZE_MAX__;
     } else {
-        ArrayList->index_start = 0;
-        ArrayList->index_end   = length - 1;
+        KatArray->index_start = 0;
+        KatArray->index_end   = length - 1;
     }
-    ArrayList->initial_value   = initial_value;
-    ArrayList->shrinkable      = shrinkable;
+    KatArray->initial_value   = initial_value;
+    KatArray->shrinkable      = shrinkable;
 
-    return ArrayList;
+    return KatArray;
 }
 
 // free arraylist
-void arraylist_char_free(arraylist_char_t *ArrayList) {
-    free(ArrayList->list);
-    free(ArrayList);
+void katarray_char_free(katarray_char_t *KatArray) {
+    free(KatArray->list);
+    free(KatArray);
 
     return;
 }
 
 // resize arraylist
-void arraylist_char_resize(arraylist_char_t **ArrayList, double growth_factor, size_t add_factor) {
+void katarray_char_resize(katarray_char_t **KatArray, double growth_factor, size_t add_factor) {
 
-    size_t new_capacity = (*ArrayList)->capacity * growth_factor + add_factor;
+    size_t new_capacity = (*KatArray)->capacity * growth_factor + add_factor;
 
     // initialize new arraylist
-    arraylist_char_t *New_ArrayList = arraylist_char_create((*ArrayList)->length, (*ArrayList)->initial_value, new_capacity, (*ArrayList)->shrinkable);
+    katarray_char_t *New_ArrayList = katarray_char_create((*KatArray)->length, (*KatArray)->initial_value, new_capacity, (*KatArray)->shrinkable);
 
-    for (size_t i = 0; i < (*ArrayList)->length; i++) {
-        New_ArrayList->list[i] = (*ArrayList)->list[((*ArrayList)->index_start + i) % (*ArrayList)->capacity];
+    for (size_t i = 0; i < (*KatArray)->length; i++) {
+        New_ArrayList->list[i] = (*KatArray)->list[((*KatArray)->index_start + i) % (*KatArray)->capacity];
     }
-    New_ArrayList->length        = (*ArrayList)->length;
+    New_ArrayList->length        = (*KatArray)->length;
     New_ArrayList->index_start   = 0;
     New_ArrayList->index_end     = New_ArrayList->length - 1;
     New_ArrayList->capacity      = new_capacity;
-    New_ArrayList->initial_value = (*ArrayList)->initial_value;
+    New_ArrayList->initial_value = (*KatArray)->initial_value;
 
-    arraylist_char_free(*ArrayList);
+    katarray_char_free(*KatArray);
 
-    *ArrayList = New_ArrayList;
+    *KatArray = New_ArrayList;
+
+    return;
 }
 
 // convert arraylist, does what resizing does but without the resize
-void arraylist_char_convert(arraylist_char_t **ArrayList) {
-    for (size_t i = 0; i < (*ArrayList)->length; i++) {
-        (*ArrayList)->list[i] = (*ArrayList)->list[((*ArrayList)->index_start + i) % (*ArrayList)->capacity];
+void katarray_char_convert(katarray_char_t **KatArray) {
+
+    katarray_char_t *New_ArrayList = katarray_char_create((*KatArray)->length, (*KatArray)->initial_value, (*KatArray)->capacity, (*KatArray)->shrinkable);
+
+    for (size_t i = 0; i < (*KatArray)->length; i++) {
+        New_ArrayList->list[i] = (*KatArray)->list[((*KatArray)->index_start + i) % (*KatArray)->capacity];
     }
+    New_ArrayList->length        = (*KatArray)->length;
+    New_ArrayList->index_start   = 0;
+    New_ArrayList->index_end     = (*KatArray)->length - 1;
+    New_ArrayList->capacity      = (*KatArray)->capacity;
+    New_ArrayList->initial_value = (*KatArray)->initial_value;
+
+    katarray_char_free(*KatArray);
+
+    *KatArray = New_ArrayList;
 
     return;
 }
@@ -237,147 +256,147 @@ void arraylist_char_convert(arraylist_char_t **ArrayList) {
 //// setters ////
 
 // set end
-size_t arraylist_char_set_append(arraylist_char_t **ArrayList, char value) {
+size_t katarray_char_set_append(katarray_char_t **KatArray, char value) {
 
     // check if resize needed
-    if ((*ArrayList)->length == (*ArrayList)->capacity) {
-        arraylist_char_resize(ArrayList, 2, 0);
+    if ((*KatArray)->length == (*KatArray)->capacity) {
+        katarray_char_resize(KatArray, 2, 0);
     }
 
     // check if empty array
-    if ((*ArrayList)->length == 0) {
-        (*ArrayList)->index_end    = 0;
-        (*ArrayList)->index_start  = 0;
-        (*ArrayList)->length       = 1;
-        (*ArrayList)->list[0]      = value;
+    if ((*KatArray)->length == 0) {
+        (*KatArray)->index_end    = 0;
+        (*KatArray)->index_start  = 0;
+        (*KatArray)->length       = 1;
+        (*KatArray)->list[0]      = value;
     }
 
     // if not empty
     else {
-        (*ArrayList)->index_end     = ((*ArrayList)->index_end + 1) % (*ArrayList)->capacity;
-        (*ArrayList)->length       += 1;
-        (*ArrayList)->list[(*ArrayList)->index_end] = value;
+        (*KatArray)->index_end     = ((*KatArray)->index_end + 1) % (*KatArray)->capacity;
+        (*KatArray)->length       += 1;
+        (*KatArray)->list[(*KatArray)->index_end] = value;
     }
 
     // return new length
-    return (*ArrayList)->length;
+    return (*KatArray)->length;
 }
 
 // set start
-size_t arraylist_char_set_prepend(arraylist_char_t **ArrayList, char value) {
+size_t katarray_char_set_prepend(katarray_char_t **KatArray, char value) {
 
     // check if resize needed
-    if ((*ArrayList)->length == (*ArrayList)->capacity) {
-        arraylist_char_resize(ArrayList, 2, 0);
+    if ((*KatArray)->length == (*KatArray)->capacity) {
+        katarray_char_resize(KatArray, 2, 0);
     }
 
     // check if empty array
-    if ((*ArrayList)->length == 0) {
-        (*ArrayList)->index_end    = 0;
-        (*ArrayList)->index_start  = 0;
-        (*ArrayList)->length       = 1;
-        (*ArrayList)->list[0]      = value;
+    if ((*KatArray)->length == 0) {
+        (*KatArray)->index_end    = 0;
+        (*KatArray)->index_start  = 0;
+        (*KatArray)->length       = 1;
+        (*KatArray)->list[0]      = value;
     }
 
     // if not empty
     else {
-        (*ArrayList)->index_start   = ((*ArrayList)->index_start - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
-        (*ArrayList)->length       += 1;
-        (*ArrayList)->list[(*ArrayList)->index_start] = value;
+        (*KatArray)->index_start   = ((*KatArray)->index_start - 1 + (*KatArray)->capacity) % (*KatArray)->capacity;
+        (*KatArray)->length       += 1;
+        (*KatArray)->list[(*KatArray)->index_start] = value;
     }
 
     // returns new length
-    return (*ArrayList)->length;
+    return (*KatArray)->length;
 }
 
 // set insert at
-ssize_t arraylist_char_set_insert_at(arraylist_char_t **ArrayList, ssize_t index, char value) {
-    if ((size_t)index < (*ArrayList)->length && index >= 0) {
+ssize_t katarray_char_set_insert_at(katarray_char_t **KatArray, ssize_t index, char value) {
+    if ((size_t)index < (*KatArray)->length && index >= 0) {
 
         // check if resize needed
-        if ((*ArrayList)->length == (*ArrayList)->capacity) {
-            arraylist_char_resize(ArrayList, 2, index);
+        if ((*KatArray)->length == (*KatArray)->capacity) {
+            katarray_char_resize(KatArray, 2, index);
         }
 
         // sliding window
         // insert numbers, shove numbers to the right
         char temp_out         = value;
         char temp_in          = 0;
-        (*ArrayList)->length += 1;
+        (*KatArray)->length += 1;
 
         // if shove to the left
-        if ((size_t)index < ((*ArrayList)->length / 2)) {
-            (*ArrayList)->index_start = (((*ArrayList)->index_start) - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
-            size_t i                  = (index + (*ArrayList)->index_start) % (*ArrayList)->capacity;
-            size_t condition          = ((*ArrayList)->index_start - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
+        if ((size_t)index < ((*KatArray)->length / 2)) {
+            (*KatArray)->index_start = (((*KatArray)->index_start) - 1 + (*KatArray)->capacity) % (*KatArray)->capacity;
+            size_t i                  = (index + (*KatArray)->index_start) % (*KatArray)->capacity;
+            size_t condition          = ((*KatArray)->index_start - 1 + (*KatArray)->capacity) % (*KatArray)->capacity;
 
             while (i != condition) {
 
-                temp_in = (*ArrayList)->list[i];
-                (*ArrayList)->list[i] = temp_out;
+                temp_in = (*KatArray)->list[i];
+                (*KatArray)->list[i] = temp_out;
                 temp_out = temp_in;
 
                 // wrap the index if needed and decrement
-                i = (i - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
+                i = (i - 1 + (*KatArray)->capacity) % (*KatArray)->capacity;
             }
         }
 
         // if shove to the right
         else {
-            (*ArrayList)->index_end = ((*ArrayList)->index_end + 1) % (*ArrayList)->capacity;
+            (*KatArray)->index_end = ((*KatArray)->index_end + 1) % (*KatArray)->capacity;
             // ( i - gap + capacity ) % capacity
-            size_t i                = (((index + (*ArrayList)->index_start) % (*ArrayList)->capacity));
-            size_t condition        = ((*ArrayList)->index_end + 1) % (*ArrayList)->capacity;
+            size_t i                = (((index + (*KatArray)->index_start) % (*KatArray)->capacity));
+            size_t condition        = ((*KatArray)->index_end + 1) % (*KatArray)->capacity;
 
             while (i != condition) {
-                temp_in = (*ArrayList)->list[i];
-                (*ArrayList)->list[i] = temp_out;
+                temp_in = (*KatArray)->list[i];
+                (*KatArray)->list[i] = temp_out;
                 temp_out = temp_in;
 
                 // wrap the index if needed and increment
-                i = (i + 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
+                i = (i + 1 + (*KatArray)->capacity) % (*KatArray)->capacity;
             }
         }
 
     }
 
-    // do arraylist_char_set_overwrite_at
+    // do katarray_char_set_overwrite_at
     else {
-        arraylist_char_set_overwrite_at(ArrayList, index, value);
+        katarray_char_set_overwrite_at(KatArray, index, value);
     }
 
-    return (*ArrayList)->length;
+    return (*KatArray)->length;
 }
 
 // set overwrite
-size_t arraylist_char_set_overwrite_at(arraylist_char_t **ArrayList, ssize_t index, char value) {
+size_t katarray_char_set_overwrite_at(katarray_char_t **KatArray, ssize_t index, char value) {
 
     // if positive
     if (index >= 0) {
         
         // check if resize needed
-        if ((size_t)index >= (*ArrayList)->capacity) {
-            arraylist_char_resize(ArrayList, 2, index);
+        if ((size_t)index >= (*KatArray)->capacity) {
+            katarray_char_resize(KatArray, 2, index);
         }
 
         // check if empty
-        if ((*ArrayList)->length == 0) {
-            (*ArrayList)->index_start  = 0;
-            (*ArrayList)->index_end    = index;
-            (*ArrayList)->length       = index + 1;
-            (*ArrayList)->list[index]  = value;
+        if ((*KatArray)->length == 0) {
+            (*KatArray)->index_start  = 0;
+            (*KatArray)->index_end    = index;
+            (*KatArray)->length       = index + 1;
+            (*KatArray)->list[index]  = value;
         }
 
         // overwrite
         else {
             // if overwrite exceeded length
-            if ((size_t)index >= (*ArrayList)->length) {
-                (*ArrayList)->index_end = (index + (*ArrayList)->index_start) % (*ArrayList)->capacity;
-                (*ArrayList)->length    =  index + 1;
-                (*ArrayList)->list[(*ArrayList)->index_end] = value;
+            if ((size_t)index >= (*KatArray)->length) {
+                (*KatArray)->index_end = (index + (*KatArray)->index_start) % (*KatArray)->capacity;
+                (*KatArray)->length    =  index + 1;
+                (*KatArray)->list[(*KatArray)->index_end] = value;
             }
 
-            (*ArrayList)->list[(index + (*ArrayList)->index_start) % ((*ArrayList)->capacity)] = value;
+            (*KatArray)->list[(index + (*KatArray)->index_start) % ((*KatArray)->capacity)] = value;
         }
     }
 
@@ -385,27 +404,27 @@ size_t arraylist_char_set_overwrite_at(arraylist_char_t **ArrayList, ssize_t ind
     else {
 
         // check if resize needed
-        if ((size_t)(index * -1) + (*ArrayList)->length > (*ArrayList)->capacity) {
-            arraylist_char_resize(ArrayList, 2, index * -1);
+        if ((size_t)(index * -1) + (*KatArray)->length > (*KatArray)->capacity) {
+            katarray_char_resize(KatArray, 2, index * -1);
         }
 
         // check if empty
-        if ((*ArrayList)->length == 0) {
-            (*ArrayList)->index_start  = (*ArrayList)->capacity - index;
-            (*ArrayList)->index_end    =   0;
-            (*ArrayList)->length       =   index * -1 + 1;
-            (*ArrayList)->list[(*ArrayList)->index_start]  = value;
+        if ((*KatArray)->length == 0) {
+            (*KatArray)->index_start  = (*KatArray)->capacity - index;
+            (*KatArray)->index_end    =   0;
+            (*KatArray)->length       =   index * -1 + 1;
+            (*KatArray)->list[(*KatArray)->index_start]  = value;
         }
 
         // overwrite into negative index
         else {
-            (*ArrayList)->index_start  = (index + (*ArrayList)->index_start + (*ArrayList)->capacity) % (*ArrayList)->capacity;
-            (*ArrayList)->length      += (index * -1);
-            (*ArrayList)->list[(*ArrayList)->index_start] = value;
+            (*KatArray)->index_start  = (index + (*KatArray)->index_start + (*KatArray)->capacity) % (*KatArray)->capacity;
+            (*KatArray)->length      += (index * -1);
+            (*KatArray)->list[(*KatArray)->index_start] = value;
         }
     }
 
-    return (*ArrayList)->length; // returns new length
+    return (*KatArray)->length; // returns new length
 }
 
 
@@ -413,28 +432,28 @@ size_t arraylist_char_set_overwrite_at(arraylist_char_t **ArrayList, ssize_t ind
 
 // returns the removed value
 // remove appended
-char arraylist_char_remove_append(arraylist_char_t **ArrayList) {
+char katarray_char_remove_append(katarray_char_t **KatArray) {
 
-    char removed_value = (*ArrayList)->list[(*ArrayList)->index_end];
+    char removed_value = (*KatArray)->list[(*KatArray)->index_end];
 
     // check if downsize is needed
-    if ((*ArrayList)->shrinkable > 0 && (*ArrayList)->capacity > 5 && (*ArrayList)->length <= ((*ArrayList)->capacity / 3)) {
-        arraylist_char_resize(ArrayList, 0.5f, 0);
+    if ((*KatArray)->shrinkable > 0 && (*KatArray)->capacity > 5 && (*KatArray)->length <= ((*KatArray)->capacity / 3)) {
+        katarray_char_resize(KatArray, 0.5f, 0);
     }
 
     // remove appended
-    if ((*ArrayList)->length > 0) {
-        (*ArrayList)->length--;
-        (*ArrayList)->list[(*ArrayList)->index_end] = (*ArrayList)->initial_value;
-        if ((*ArrayList)->length != 0) {
-            (*ArrayList)->index_end = ((*ArrayList)->index_end - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
+    if ((*KatArray)->length > 0) {
+        (*KatArray)->length--;
+        (*KatArray)->list[(*KatArray)->index_end] = (*KatArray)->initial_value;
+        if ((*KatArray)->length != 0) {
+            (*KatArray)->index_end = ((*KatArray)->index_end - 1 + (*KatArray)->capacity) % (*KatArray)->capacity;
         }
     }
 
     // check if empty
-    if ((*ArrayList)->length == 0) {
-        (*ArrayList)->index_end    = 0;
-        (*ArrayList)->index_start  = 0;
+    if ((*KatArray)->length == 0) {
+        (*KatArray)->index_end    = 0;
+        (*KatArray)->index_start  = 0;
     }
 
     return removed_value;
@@ -442,117 +461,117 @@ char arraylist_char_remove_append(arraylist_char_t **ArrayList) {
 
 // returns the removed value
 // remove prepended
-char arraylist_char_remove_prepend(arraylist_char_t **ArrayList) {
+char katarray_char_remove_prepend(katarray_char_t **KatArray) {
 
-    char removed_value = (*ArrayList)->list[(*ArrayList)->index_start];
+    char removed_value = (*KatArray)->list[(*KatArray)->index_start];
     
     // check if downsize is needed
-    if ((*ArrayList)->shrinkable > 0 && (*ArrayList)->capacity > 5 && (*ArrayList)->length <= ((*ArrayList)->capacity / 3)) {
-        arraylist_char_resize(ArrayList, 0.5f, 0);
+    if ((*KatArray)->shrinkable > 0 && (*KatArray)->capacity > 5 && (*KatArray)->length <= ((*KatArray)->capacity / 3)) {
+        katarray_char_resize(KatArray, 0.5f, 0);
     }
 
     // remove prepended
-    if ((*ArrayList)->length > 0) {
-        (*ArrayList)->length--;
-        (*ArrayList)->list[(*ArrayList)->index_start] = (*ArrayList)->initial_value;
-        if ((*ArrayList)->length != 0) {
-            (*ArrayList)->index_start = ((*ArrayList)->index_start + 1) % (*ArrayList)->capacity;
+    if ((*KatArray)->length > 0) {
+        (*KatArray)->length--;
+        (*KatArray)->list[(*KatArray)->index_start] = (*KatArray)->initial_value;
+        if ((*KatArray)->length != 0) {
+            (*KatArray)->index_start = ((*KatArray)->index_start + 1) % (*KatArray)->capacity;
         }
     }
 
     // check if empty
-    if ((*ArrayList)->length == 0) {
-        (*ArrayList)->index_end   = 0;
-        (*ArrayList)->index_start = 0;
+    if ((*KatArray)->length == 0) {
+        (*KatArray)->index_end   = 0;
+        (*KatArray)->index_start = 0;
     }
 
     return removed_value;
 }
 
 // remove insert at
-char arraylist_char_remove_insert_at(arraylist_char_t **ArrayList, size_t index) {
+char katarray_char_remove_insert_at(katarray_char_t **KatArray, size_t index) {
 
-    char removed_value = (*ArrayList)->list[(index + (*ArrayList)->index_start) % (*ArrayList)->capacity];
+    char removed_value = (*KatArray)->list[(index + (*KatArray)->index_start) % (*KatArray)->capacity];
 
-    if (index < (*ArrayList)->length) {
+    if (index < (*KatArray)->length) {
 
         // check if downsize is needed
-        if ((*ArrayList)->shrinkable > 0 && (*ArrayList)->capacity > 5 && (*ArrayList)->length <= ((*ArrayList)->capacity / 3)) {
-            arraylist_char_resize(ArrayList, 0.5f, 0);
+        if ((*KatArray)->shrinkable > 0 && (*KatArray)->capacity > 5 && (*KatArray)->length <= ((*KatArray)->capacity / 3)) {
+            katarray_char_resize(KatArray, 0.5f, 0);
         }
 
         // remove inserted at
-        if ((*ArrayList)->length > 0) {
-            (*ArrayList)->length--;
+        if ((*KatArray)->length > 0) {
+            (*KatArray)->length--;
             //char temp_in = 0;
             size_t i        = 0;
             size_t i_offset = 0;
 
             // shove from left side
-            if (index < (*ArrayList)->length / 2) {
+            if (index < (*KatArray)->length / 2) {
 
-                i = (index + (*ArrayList)->index_start) % (*ArrayList)->capacity;
+                i = (index + (*KatArray)->index_start) % (*KatArray)->capacity;
 
-                while (i != (*ArrayList)->index_start) {
-                    i_offset = (i - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
-                    (*ArrayList)->list[i] = (*ArrayList)->list[i_offset];
+                while (i != (*KatArray)->index_start) {
+                    i_offset = (i - 1 + (*KatArray)->capacity) % (*KatArray)->capacity;
+                    (*KatArray)->list[i] = (*KatArray)->list[i_offset];
 
                     i = i_offset;
                 }
-                (*ArrayList)->list[i] = (*ArrayList)->initial_value;
-                (*ArrayList)->index_start = ((*ArrayList)->index_start + 1) % (*ArrayList)->capacity;
+                (*KatArray)->list[i] = (*KatArray)->initial_value;
+                (*KatArray)->index_start = ((*KatArray)->index_start + 1) % (*KatArray)->capacity;
             }
 
             // shove from right side
             else {
                 
-                i = (index + (*ArrayList)->index_start) % (*ArrayList)->capacity;
+                i = (index + (*KatArray)->index_start) % (*KatArray)->capacity;
 
-                while (i != (*ArrayList)->index_end) {
-                    i_offset = (i + 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
-                    (*ArrayList)->list[i] = (*ArrayList)->list[i_offset];
+                while (i != (*KatArray)->index_end) {
+                    i_offset = (i + 1 + (*KatArray)->capacity) % (*KatArray)->capacity;
+                    (*KatArray)->list[i] = (*KatArray)->list[i_offset];
 
                     i = i_offset;
                 }
-                (*ArrayList)->list[i] = (*ArrayList)->initial_value;
-                (*ArrayList)->index_end = ((*ArrayList)->index_end - 1 + (*ArrayList)->capacity) % (*ArrayList)->capacity;
+                (*KatArray)->list[i] = (*KatArray)->initial_value;
+                (*KatArray)->index_end = ((*KatArray)->index_end - 1 + (*KatArray)->capacity) % (*KatArray)->capacity;
             }
         }
     }
 
     // check if empty
-    if ((*ArrayList)->length == 0) {
-        (*ArrayList)->index_end   = 0;
-        (*ArrayList)->index_start = 0;
+    if ((*KatArray)->length == 0) {
+        (*KatArray)->index_end   = 0;
+        (*KatArray)->index_start = 0;
     }
     
     return removed_value;
 }
 
 // remove overwrite, defaults to initial value
-char arraylist_char_remove_overwrite_at(arraylist_char_t **ArrayList, size_t index) {
+char katarray_char_remove_overwrite_at(katarray_char_t **KatArray, size_t index) {
     
-    char removed_value = (*ArrayList)->list[(index + (*ArrayList)->index_start) % (*ArrayList)->capacity];
+    char removed_value = (*KatArray)->list[(index + (*KatArray)->index_start) % (*KatArray)->capacity];
 
     // if at start or end, reroute
     if (index == 0) {
-        arraylist_char_remove_prepend(ArrayList);
+        katarray_char_remove_prepend(KatArray);
     }
-    else if (index >= (*ArrayList)->length - 1) {
-        arraylist_char_remove_append(ArrayList);
+    else if (index >= (*KatArray)->length - 1) {
+        katarray_char_remove_append(KatArray);
     }
 
     // overwrite value with initial_value
     else {
-        (*ArrayList)->list[(index + (*ArrayList)->index_start) % (*ArrayList)->capacity] = (*ArrayList)->initial_value;
+        (*KatArray)->list[(index + (*KatArray)->index_start) % (*KatArray)->capacity] = (*KatArray)->initial_value;
     }
 
     return removed_value;
 }
 
 // remove / resest the whole array
-void arraylist_char_reset(arraylist_char_t **ArrayList, size_t length, size_t capacity) {
-    *ArrayList = arraylist_char_create(length, (*ArrayList)->initial_value, capacity, (*ArrayList)->shrinkable);
+void katarray_char_reset(katarray_char_t **KatArray, size_t length, size_t capacity) {
+    *KatArray = katarray_char_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
     return;
 }
 
@@ -560,64 +579,64 @@ void arraylist_char_reset(arraylist_char_t **ArrayList, size_t length, size_t ca
 //// getters
 
 // get value at index
-char arraylist_char_get_value_at(arraylist_char_t *ArrayList, size_t index) {
-    if (index < ArrayList->length) {
-        return ArrayList->list[(index + ArrayList->index_start) % ArrayList->capacity];
+char katarray_char_get_value_at(katarray_char_t *KatArray, size_t index) {
+    if (index < KatArray->length) {
+        return KatArray->list[(index + KatArray->index_start) % KatArray->capacity];
     }
 
     else return -1;
 }
 
 // get value at start index
-char arraylist_char_get_first_value(arraylist_char_t *ArrayList) {
-    return ArrayList->list[ArrayList->index_start];
+char katarray_char_get_first_value(katarray_char_t *KatArray) {
+    return KatArray->list[KatArray->index_start];
 }
 
 // get value at end index
-char arraylist_char_get_last_value(arraylist_char_t *ArrayList) {
-    return ArrayList->list[ArrayList->index_end];
+char katarray_char_get_last_value(katarray_char_t *KatArray) {
+    return KatArray->list[KatArray->index_end];
 }
 
 // get length of array
-size_t arraylist_char_get_length(arraylist_char_t *ArrayList) {
-    return ArrayList->length;
+size_t katarray_char_get_length(katarray_char_t *KatArray) {
+    return KatArray->length;
 }
 
 // get capacity of array
-size_t arraylist_char_get_capacity(arraylist_char_t *ArrayList) {
-    return ArrayList->capacity;
+size_t katarray_char_get_capacity(katarray_char_t *KatArray) {
+    return KatArray->capacity;
 }
 
 
 //// queue operations + ring buffer operations
 
 // enqueue
-size_t arraylist_char_enqueue(arraylist_char_t **ArrayList, char value) {
-    return arraylist_char_set_append(ArrayList, value);
+size_t katarray_char_enqueue(katarray_char_t **KatArray, char value) {
+    return katarray_char_set_append(KatArray, value);
 }
 
 // dequeue
-char arraylist_char_dequeue(arraylist_char_t **ArrayList) {
-    return arraylist_char_remove_prepend(ArrayList);
+char katarray_char_dequeue(katarray_char_t **KatArray) {
+    return katarray_char_remove_prepend(KatArray);
 }
 
 // peek at the start/head of the arraylist
-char arraylist_char_peek_head(arraylist_char_t *ArrayList) {
-    return arraylist_char_get_first_value(ArrayList);
+char katarray_char_peek_head(katarray_char_t *KatArray) {
+    return katarray_char_get_first_value(KatArray);
 }
 
 // is full -> automatic resizing is always on but you can actually check this before adding to know if you're going to go over the capacity limit to resize
 // so if you want to use a strict capacity limit from the start, then use this.
-char arraylist_char_is_full(arraylist_char_t *ArrayList) {
-    if (ArrayList->length == ArrayList->capacity) {
+char katarray_char_is_full(katarray_char_t *KatArray) {
+    if (KatArray->length == KatArray->capacity) {
         return 1;
     }
     else return -1;
 }
 
 // is empty
-char arraylist_char_is_empty(arraylist_char_t *ArrayList) {
-    if (ArrayList->length == 0 && ArrayList->index_end == ArrayList->index_start) {
+char katarray_char_is_empty(katarray_char_t *KatArray) {
+    if (KatArray->length == 0 && KatArray->index_end == KatArray->index_start) {
         return 1;
     }
     else return -1;
@@ -627,19 +646,20 @@ char arraylist_char_is_empty(arraylist_char_t *ArrayList) {
 //// stack operations
 
 // push
-size_t arraylist_char_push(arraylist_char_t **ArrayList, char value) {
-    return arraylist_char_set_append(ArrayList, value);
+size_t katarray_char_push(katarray_char_t **KatArray, char value) {
+    return katarray_char_set_append(KatArray, value);
 }
 
 // pop
-char arraylist_char_pop(arraylist_char_t **ArrayList) {
-    return arraylist_char_remove_append(ArrayList);
+char katarray_char_pop(katarray_char_t **KatArray) {
+    return katarray_char_remove_append(KatArray);
 }
 
 // peek top
-char arraylist_char_peek_top(arraylist_char_t **ArrayList) {
-    return arraylist_char_get_last_value(ArrayList);
+char katarray_char_peek_top(katarray_char_t *KatArray) {
+    return katarray_char_get_last_value(KatArray);
 }
+
 
 
 //// memory helpers
@@ -655,57 +675,50 @@ void *malloc_wrapper(size_t size, const char* function_name) {
 
 
 int main(void) {
-    arraylist_char_t *ArrayList = arraylist_char_create(0, '_', 10, 1);
-
-    // IS
-    arraylist_char_set_prepend(&ArrayList, 'S');
-    arraylist_char_set_prepend(&ArrayList, 'I');
-    arraylist_char_set_prepend(&ArrayList, ' ');
-    // MOMMY
-    arraylist_char_set_prepend(&ArrayList, 'Y');
-    arraylist_char_set_prepend(&ArrayList, 'M');
-    arraylist_char_debug_print(ArrayList, 1);
-    arraylist_char_length_print(ArrayList, 0);
-    arraylist_char_set_prepend(&ArrayList, 'M');
-    arraylist_char_debug_print(ArrayList, 1);
-    arraylist_char_length_print(ArrayList, 0);
-    arraylist_char_set_prepend(&ArrayList, 'O');
-    arraylist_char_debug_print(ArrayList, 1);
-    arraylist_char_length_print(ArrayList, 0);
-    arraylist_char_set_prepend(&ArrayList, 'M');
-    arraylist_char_debug_print(ArrayList, 1);
-    arraylist_char_length_print(ArrayList, 0);
-    arraylist_char_set_append(&ArrayList, ' ');
-    arraylist_char_debug_print(ArrayList, 1);
-    arraylist_char_length_print(ArrayList, 0);
-    // COOL
-    arraylist_char_set_append(&ArrayList, 'C');
-    arraylist_char_set_append(&ArrayList, 'O');
-    arraylist_char_set_append(&ArrayList, 'O');
-    arraylist_char_set_append(&ArrayList, 'L');
-    arraylist_char_debug_print(ArrayList, 1);
-    arraylist_char_length_print(ArrayList, 0);
-
-    arraylist_char_set_insert_at(&ArrayList, 10, '@');
-    arraylist_char_set_insert_at(&ArrayList, 14, '@');
-    arraylist_char_remove_insert_at(&ArrayList, 14);
-    arraylist_char_remove_insert_at(&ArrayList, 10);
-    //arraylist_char_remove_insert_at(&ArrayList, 10);
     
-    arraylist_char_set_insert_at(&ArrayList, -2, '@');
-    printf("%zu", arraylist_char_get_capacity(ArrayList));
+    size_t n_inserts = 100000000;
+    double time_spent_front = 0;
+    double time_spent_back  = 0;
+    double time_spent_first_quart = 0;
+    double time_spent_third_quart = 0;
 
-    //arraylist_char_remove_overwrite_at(&ArrayList, );
-    
+    katarray_char_t *KatArray = katarray_char_create(0, '_', 5, 1);
 
-    arraylist_char_debug_print(ArrayList, 1);
-    arraylist_char_length_print(ArrayList, 0);
+    for (size_t i = 0; i < n_inserts/4; i++) {
+        clock_t start_front = clock();
+        katarray_char_set_prepend(&KatArray, '@');
+        clock_t end_front = clock();
+        time_spent_front = (double)(end_front - start_front) / CLOCKS_PER_SEC;
 
-    //arraylist_char_set_insert_after(&ArrayList, 0, '9');
-    //arraylist_char_debug_print(ArrayList, 1);
-    //arraylist_char_length_print(ArrayList, 0);
+        printf("Time for %zu / %zu insert at the ---front: %f seconds\n", i, n_inserts, time_spent_front);
 
-    arraylist_char_free(ArrayList);
+
+        clock_t start_back = clock();
+        katarray_char_set_append(&KatArray, 'D');
+        clock_t end_back = clock();
+        time_spent_back = (double)(end_back - start_back) / CLOCKS_PER_SEC;
+
+        printf("Time for %zu / %zu insert at the ----back: %f seconds\n", i + 1, n_inserts, time_spent_back);
+
+
+        clock_t start_insert_first_quart = clock();
+        katarray_char_set_insert_at(&KatArray, '0', i/4);
+        clock_t end_insert_first_quart = clock();
+        time_spent_first_quart = (double)(end_insert_first_quart - start_insert_first_quart) / CLOCKS_PER_SEC;
+
+        printf("Time for %zu / %zu insert at ---------i/4: %f seconds\n", i + 2, n_inserts, time_spent_first_quart);
+
+
+        clock_t start_insert_third_quart = clock();
+        katarray_char_set_insert_at(&KatArray, 'D', (i/4)*3);
+        clock_t end_insert_third_quart = clock();
+        time_spent_third_quart = (double)(end_insert_third_quart - start_insert_third_quart) / CLOCKS_PER_SEC;
+
+        printf("Time for %zu / %zu insert at ---------i/4: %f seconds\n", i + 3, n_inserts, time_spent_third_quart);
+    }
+
+
+    katarray_char_free(KatArray);
 
     return 0;
 }
