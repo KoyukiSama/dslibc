@@ -682,7 +682,6 @@ int main(void) {
     katarray_char_t *KatArray = katarray_char_create(0, '_', 5, 1);
 
     clock_t start = clock();
-    clock_t end   = clock();
 
     for (size_t i = 0; i < n_inserts/4; i++) {
 
@@ -700,6 +699,7 @@ int main(void) {
 
     }
 
+    clock_t end   = clock();
     time_spent = (double)(end - start) / CLOCKS_PER_SEC;
 
     printf("Time for %zu : %f seconds\n", n_inserts, time_spent);
