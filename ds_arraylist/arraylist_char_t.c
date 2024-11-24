@@ -676,7 +676,7 @@ void *malloc_wrapper(size_t size, const char* function_name) {
 
 int main(void) {
     
-    size_t n_inserts = 100000000;
+    size_t n_inserts = 1000000000;
     double time_spent = 0;
 
     katarray_char_t *KatArray = katarray_char_create(0, '_', 5, 1);
