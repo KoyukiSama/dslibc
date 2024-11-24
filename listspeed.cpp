@@ -1,34 +1,39 @@
 #include <iostream>
-#include <vector>
+#include <list>
 #include <ctime>
+#include <iterator> // For std::advance
 
 int main() {
-    size_t n_inserts = 100000000;
+    size_t n_inserts = 1000000000;
     double time_spent = 0;
 
-    // Create the vector with an initial capacity
-    std::vector<char> Vector;
-    Vector.reserve(5); // Reserve initial capacity (optional, similar to your initial size)
+    // Create the list
+    std::list<char> List;
+    // No need to reserve capacity for std::list
 
     clock_t start = clock();
 
     for (size_t i = 0; i < n_inserts / 4; i++) {
         // Prepend (insert at the beginning)
-        Vector.insert(Vector.begin(), '@');
+        List.push_front('@');
 
         // Append (push back)
-        Vector.push_back('D');
+        List.push_back('D');
 
         // Insert at 1/4
-        size_t insert_pos_1_4 = Vector.size() / 4;
-        if (insert_pos_1_4 < Vector.size()) { // Safety check
-            Vector.insert(Vector.begin() + insert_pos_1_4, '0');
+        size_t insert_pos_1_4 = i / 4; // Use i/4 like in your program
+        if (insert_pos_1_4 < List.size()) { // Safety check
+            auto it = List.begin();
+            std::advance(it, insert_pos_1_4);
+            List.insert(it, '0');
         }
 
         // Insert at 3/4
-        size_t insert_pos_3_4 = (Vector.size() * 3) / 4;
-        if (insert_pos_3_4 < Vector.size()) { // Safety check
-            Vector.insert(Vector.begin() + insert_pos_3_4, 'D');
+        size_t insert_pos_3_4 = (i / 4) * 3; // Use (i/4)*3 like in your program
+        if (insert_pos_3_4 < List.size()) { // Safety check
+            auto it = List.begin();
+            std::advance(it, insert_pos_3_4);
+            List.insert(it, 'D');
         }
     }
 
