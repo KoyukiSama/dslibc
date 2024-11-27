@@ -4,7 +4,7 @@
 #include <iterator> // For std::advance
 
 int main() {
-    size_t n_inserts = 1000;
+    size_t n_inserts = 10000000;
     double time_spent = 0;
 
     // Create the list

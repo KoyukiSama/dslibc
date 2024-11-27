@@ -1,0 +1,5 @@
+# C compiler
+gcc file_name -o {name}.out
+
+# C++ compiler
+g++ -O2 -std=c++11 file_name.cpp -o {name}.out
