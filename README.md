@@ -3,7 +3,6 @@ A library where I'll recreate datastructures that will be generically used.
 
 ## Future datastructs:
 
-! I'll try to make all of these for all data types to reduce cache missallignment
 
 ### - ArrayList -
 
@@ -75,7 +74,19 @@ use arraylist_get_length or arraylist->length
 (internal helper function)
 1. arraylist_resize             // O(n)
 
-SOON maybe also serealization
+you can use a static array but then you will have to create and initialize the struct your self.
+```typedef struct Katarray_char {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    char initial_value;
+    char list[N]; <-- instead of char* list
+} katarray_char_t;
+```
 
 
 ### - LinkedList -
