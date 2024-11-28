@@ -5,6 +5,18 @@
 
 ////* CHAR LIB *///
 
+typedef struct Katarray_char {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    char initial_value;
+    char *list;
+} katarray_char_t;
+
 // (printers) //
 void    katarray_char_length_print(katarray_char_t *KatArray, char option);
 void    katarray_char_capacity_print(katarray_char_t *KatArray, char option);
@@ -52,6 +64,18 @@ char    katarray_char_is_empty(katarray_char_t *KatArray);
 
 
 ////* DOUBLE LIB *////
+
+typedef struct KatArray_double {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    double initial_value;
+    double *list;
+} katarray_double_t;
 
 // (printers) //
 void    katarray_double_length_print(katarray_double_t *KatArray, char option);
@@ -101,6 +125,18 @@ char    katarray_double_is_empty(katarray_double_t *KatArray);
 
 ////* FLOAT LIB *////
 
+typedef struct KatArray_float {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    float initial_value;
+    float *list;
+} katarray_float_t;
+
 // (printers) //
 void    katarray_float_length_print(katarray_float_t *KatArray, char option);
 void    katarray_float_capacity_print(katarray_float_t *KatArray, char option);
@@ -148,6 +184,18 @@ char    katarray_float_is_empty(katarray_float_t *KatArray);
 
 
 ////* INT LIB *////
+
+typedef struct KatArray_int {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    int initial_value;
+    int *list;
+} katarray_int_t;
 
 // (printers) //
 void    katarray_int_length_print(katarray_int_t *KatArray, char option);
@@ -197,6 +245,18 @@ char    katarray_int_is_empty(katarray_int_t *KatArray);
 
 ////* LONG LIB *////
 
+typedef struct KatArray_long {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    long initial_value;
+    long *list;
+} katarray_long_t;
+
 // (printers) //
 void    katarray_long_length_print(katarray_long_t *KatArray, char option);
 void    katarray_long_capacity_print(katarray_long_t *KatArray, char option);
@@ -244,6 +304,18 @@ char    katarray_long_is_empty(katarray_long_t *KatArray);
 
 
 ////* LONG DOUBLE LIB *////
+
+typedef struct KatArray_longdouble {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    long double initial_value;
+    long double *list;
+} katarray_longdouble_t;
 
 // (printers) //
 void        katarray_longdouble_length_print(katarray_longdouble_t *KatArray, char option);
@@ -293,6 +365,18 @@ char        katarray_longdouble_is_empty(katarray_longdouble_t *KatArray);
 
 ////* LONG LONG LIB *////
 
+typedef struct KatArray_longlong {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    long long initial_value;
+    long long *list;
+} katarray_longlong_t;
+
 // (printers) //
 void        katarray_longlong_length_print(katarray_longlong_t *KatArray, char option);
 void        katarray_longlong_capacity_print(katarray_longlong_t *KatArray, char option);
@@ -340,6 +424,18 @@ char        katarray_longlong_is_empty(katarray_longlong_t *KatArray);
 
 
 ////* SHORT LIB *////
+
+typedef struct KatArray_short {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    short initial_value;
+    short *list;
+} katarray_short_t;
 
 // (printers) //
 void    katarray_short_length_print(katarray_short_t *KatArray, char option);
@@ -389,6 +485,18 @@ char    katarray_short_is_empty(katarray_short_t *KatArray);
 
 ////* UNSIGNED CHAR LIB *////
 
+typedef struct KatArray_uchar {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    unsigned char initial_value;
+    unsigned char *list;
+} katarray_uchar_t;
+
 // (printers) //
 void            katarray_uchar_length_print(katarray_uchar_t *KatArray, char option);
 void            katarray_uchar_capacity_print(katarray_uchar_t *KatArray, char option);
@@ -436,6 +544,18 @@ char            katarray_uchar_is_empty(katarray_uchar_t *KatArray);
 
 
 ////* UNSIGNED INT LIB *////
+
+typedef struct KatArray_uint {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    unsigned int initial_value;
+    unsigned int *list;
+} katarray_uint_t;
 
 // (printers) //
 void            katarray_uint_length_print(katarray_uint_t *KatArray, char option);
@@ -485,6 +605,18 @@ char            katarray_uint_is_empty(katarray_uint_t *KatArray);
 
 ////* UNSIGNED LONG LIB *////
 
+typedef struct KatArray_ulong {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    unsigned long initial_value;
+    unsigned long *list;
+} katarray_ulong_t;
+
 // (printers) //
 void            katarray_ulong_length_prlong(katarray_ulong_t *KatArray, char option);
 void            katarray_ulong_capacity_prlong(katarray_ulong_t *KatArray, char option);
@@ -532,6 +664,18 @@ char            katarray_ulong_is_empty(katarray_ulong_t *KatArray);
 
 
 ////* UNSIGNED LONG LONG LIB *////
+
+typedef struct KatArray_ulonglong {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    unsigned long long initial_value;
+    unsigned long long *list;
+} katarray_ulonglong_t;
 
 // (printers) //
 void                katarray_ulonglong_length_prlong(katarray_ulonglong_t *KatArray, char option);
@@ -581,6 +725,18 @@ char                katarray_ulonglong_is_empty(katarray_ulonglong_t *KatArray);
 
 ////* UNSIGNED SHORT LIB *////
 
+typedef struct KatArray_unsigned {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    unsigned short initial_value;
+    unsigned short *list;
+} katarray_ushort_t;
+
 // (printers) //
 void            katarray_ushort_length_prshort(katarray_ushort_t *KatArray, char option);
 void            katarray_ushort_capacity_prshort(katarray_ushort_t *KatArray, char option);
@@ -628,6 +784,18 @@ char            katarray_ushort_is_empty(katarray_ushort_t *KatArray);
 
 
 ////* VOID POINTER LIB *////
+
+typedef struct KatArray_voidp {
+    size_t length;
+    size_t capacity;
+
+    size_t index_start;
+    size_t index_end;
+
+    char shrinkable;
+    void* initial_value;
+    void* *list;
+} katarray_voidp_t;
 
 // (printers) //
 void    katarray_voidp_length_print(katarray_voidp_t *KatArray, char option);

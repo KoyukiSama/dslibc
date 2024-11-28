@@ -13,17 +13,7 @@
 #define RED "\033[38;5;1m"
 #define END "\033[0m"
 
-typedef struct Katarray_char {
-    size_t length;
-    size_t capacity;
 
-    size_t index_start;
-    size_t index_end;
-
-    char shrinkable;
-    char initial_value;
-    char *list;
-} katarray_char_t;
 
 
 size_t katarray_char_set_overwrite_at(katarray_char_t **KatArray, ssize_t index, char value);

@@ -13,17 +13,7 @@
 #define RED "\033[38;5;1m"
 #define END "\033[0m"
 
-typedef struct KatArray_longlong {
-    size_t length;
-    size_t capacity;
 
-    size_t index_start;
-    size_t index_end;
-
-    char shrinkable;
-    long long initial_value;
-    long long *list;
-} katarray_longlong_t;
 
 
 size_t katarray_longlong_set_overwrite_at(katarray_longlong_t **KatArray, ssize_t index, long long value);

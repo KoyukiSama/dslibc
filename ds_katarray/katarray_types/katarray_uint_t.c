@@ -13,17 +13,6 @@
 #define RED "\033[38;5;1m"
 #define END "\033[0m"
 
-typedef struct KatArray_unsigned {
-    size_t length;
-    size_t capacity;
-
-    size_t index_start;
-    size_t index_end;
-
-    char shrinkable;
-    unsigned int initial_value;
-    unsigned int *list;
-} katarray_uint_t;
 
 
 size_t katarray_uint_set_overwrite_at(katarray_uint_t **KatArray, ssize_t index, unsigned int value);
