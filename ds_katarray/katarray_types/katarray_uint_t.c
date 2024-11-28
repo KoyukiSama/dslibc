@@ -306,7 +306,7 @@ size_t katarray_uint_set_prepend(katarray_uint_t **KatArray, unsigned int value)
 }
 
 // set insert at
-ssize_t katarray_uint_set_insert_at(katarray_uint_t **KatArray, ssize_t index, unsigned int value) {
+size_t katarray_uint_set_insert_at(katarray_uint_t **KatArray, ssize_t index, unsigned int value) {
     if ((size_t)index < (*KatArray)->length && index >= 0) {
 
         // check if resize needed
@@ -655,18 +655,4 @@ unsigned int katarray_uint_pop(katarray_uint_t **KatArray) {
 unsigned int katarray_uint_peek_top(katarray_uint_t *KatArray) {
     return katarray_uint_get_last_value(KatArray);
 }
-
-
-
-//// memory helpers
-
-void *malloc_wrapper(size_t size, const char* function_name) {
-    void* ptr = malloc(size);
-    if (ptr == NULL) {
-        fprintf(stderr, "[ERROR] %s: (%s)\n", __func__, function_name);
-        exit(EXIT_FAILURE);
-    }
-    return ptr;
-}
-
 

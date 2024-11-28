@@ -306,7 +306,7 @@ size_t katarray_short_set_prepend(katarray_short_t **KatArray, short value) {
 }
 
 // set insert at
-ssize_t katarray_short_set_insert_at(katarray_short_t **KatArray, ssize_t index, short value) {
+size_t katarray_short_set_insert_at(katarray_short_t **KatArray, ssize_t index, short value) {
     if ((size_t)index < (*KatArray)->length && index >= 0) {
 
         // check if resize needed
@@ -654,18 +654,5 @@ short katarray_short_pop(katarray_short_t **KatArray) {
 // peek top
 short katarray_short_peek_top(katarray_short_t *KatArray) {
     return katarray_short_get_last_value(KatArray);
-}
-
-
-
-//// memory helpers
-
-void *malloc_wrapper(size_t size, const char* function_name) {
-    void* ptr = malloc(size);
-    if (ptr == NULL) {
-        fprintf(stderr, "[ERROR] %s: (%s)\n", __func__, function_name);
-        exit(EXIT_FAILURE);
-    }
-    return ptr;
 }
 

@@ -308,7 +308,7 @@ size_t katarray_char_set_prepend(katarray_char_t **KatArray, char value) {
 }
 
 // set insert at
-ssize_t katarray_char_set_insert_at(katarray_char_t **KatArray, ssize_t index, char value) {
+size_t katarray_char_set_insert_at(katarray_char_t **KatArray, ssize_t index, char value) {
     if ((size_t)index < (*KatArray)->length && index >= 0) {
 
         // check if resize needed

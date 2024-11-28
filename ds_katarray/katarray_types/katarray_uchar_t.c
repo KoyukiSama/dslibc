@@ -306,7 +306,7 @@ size_t katarray_uchar_set_prepend(katarray_uchar_t **KatArray, unsigned char val
 }
 
 // set insert at
-ssize_t katarray_uchar_set_insert_at(katarray_uchar_t **KatArray, ssize_t index, unsigned char value) {
+size_t katarray_uchar_set_insert_at(katarray_uchar_t **KatArray, ssize_t index, unsigned char value) {
     if ((size_t)index < (*KatArray)->length && index >= 0) {
 
         // check if resize needed
@@ -656,16 +656,4 @@ unsigned char katarray_uchar_peek_top(katarray_uchar_t *KatArray) {
     return katarray_uchar_get_last_value(KatArray);
 }
 
-
-
-//// memory helpers
-
-void *malloc_wrapper(size_t size, const char* function_name) {
-    void* ptr = malloc(size);
-    if (ptr == NULL) {
-        fprintf(stderr, "[ERROR] %s: (%s)\n", __func__, function_name);
-        exit(EXIT_FAILURE);
-    }
-    return ptr;
-}
 
