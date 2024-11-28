@@ -600,27 +600,27 @@ size_t          katarray_ushort_set_insert_at(katarray_ushort_t **KatArray, ssiz
 size_t          katarray_ushort_set_overwrite_at(katarray_ushort_t **KatArray, ssize_t index, unsigned short value);
 
 // (removers) //
-unsigned short   katarray_ushort_remove_append(katarray_ushort_t **KatArray);
-unsigned short   katarray_ushort_remove_prepend(katarray_ushort_t **KatArray);
-unsigned short   katarray_ushort_remove_insert_at(katarray_ushort_t **KatArray, size_t index);
-unsigned short   katarray_ushort_remove_overwrite_at(katarray_ushort_t **KatArray, size_t index);
+unsigned short  katarray_ushort_remove_append(katarray_ushort_t **KatArray);
+unsigned short  katarray_ushort_remove_prepend(katarray_ushort_t **KatArray);
+unsigned short  katarray_ushort_remove_insert_at(katarray_ushort_t **KatArray, size_t index);
+unsigned short  katarray_ushort_remove_overwrite_at(katarray_ushort_t **KatArray, size_t index);
 
 // (getters) //
-unsigned short   katarray_ushort_get_value_at(katarray_ushort_t *KatArray, size_t index);
-unsigned short   katarray_ushort_get_first_value(katarray_ushort_t *KatArray);
-unsigned short   katarray_ushort_get_last_value(katarray_ushort_t *KatArray);
+unsigned short  katarray_ushort_get_value_at(katarray_ushort_t *KatArray, size_t index);
+unsigned short  katarray_ushort_get_first_value(katarray_ushort_t *KatArray);
+unsigned short  katarray_ushort_get_last_value(katarray_ushort_t *KatArray);
 size_t          katarray_ushort_get_length(katarray_ushort_t *KatArray);
 size_t          katarray_ushort_get_capacity(katarray_ushort_t *KatArray);
 
 // (QUEUE OPERATIONS) //
 size_t          katarray_ushort_enqueue(katarray_ushort_t **KatArray, unsigned short value);
-unsigned short   katarray_ushort_dequeue(katarray_ushort_t **KatArray);
-unsigned short   katarray_ushort_peek_head(katarray_ushort_t *KatArray);
+unsigned short  katarray_ushort_dequeue(katarray_ushort_t **KatArray);
+unsigned short  katarray_ushort_peek_head(katarray_ushort_t *KatArray);
 
 // (STACK OPERATIONS) //
 size_t          katarray_ushort_push(katarray_ushort_t **KatArray, unsigned short value);
-unsigned short   katarray_ushort_pop(katarray_ushort_t **KatArray);
-unsigned short   katarray_ushort_peek_top(katarray_ushort_t *KatArray);
+unsigned short  katarray_ushort_pop(katarray_ushort_t **KatArray);
+unsigned short  katarray_ushort_peek_top(katarray_ushort_t *KatArray);
 
 // (QUEUE + STACK + RINGBUFFER EXTRAS) //
 char            katarray_ushort_is_full(katarray_ushort_t *KatArray);

@@ -1,4 +1,4 @@
-#include "katarray_helper.h"
+#include "../katarray.h"
 
 #include <stdlib.h>
 #include <stdio.h>

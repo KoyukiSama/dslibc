@@ -4,6 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "../katarray.h"
+
 
 #define GRAY "\033[38;5;8m"
 #define GREEN "\033[38;5;2m"
