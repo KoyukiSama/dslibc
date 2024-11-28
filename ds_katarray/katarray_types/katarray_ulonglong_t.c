@@ -21,7 +21,7 @@ void *malloc_wrapper(size_t size, const char* function_name);
 
 // prlongs all elements
 // if option > 0: then display index.
-void katarray_ulonglong_length_prlong(katarray_ulonglong_t *KatArray, unsigned long long option) {
+void katarray_ulonglong_length_prlong(katarray_ulonglong_t *KatArray, char option) {
     if (option > 0) {
         // index
         prlongf(GRAY" ");

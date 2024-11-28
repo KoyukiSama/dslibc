@@ -2,6 +2,7 @@
 #define KATARRAY_H
 
 #include "katarray_helper.h"
+#include <sys/types.h>
 
 ////* CHAR LIB *///
 

@@ -21,7 +21,7 @@ void *malloc_wrapper(size_t size, const char* function_name);
 
 // prshorts all elements
 // if option > 0: then display index.
-void katarray_ushort_length_prshort(katarray_ushort_t *KatArray, unsigned short option) {
+void katarray_ushort_length_prshort(katarray_ushort_t *KatArray, char option) {
     if (option > 0) {
         // index
         prshortf(GRAY" ");

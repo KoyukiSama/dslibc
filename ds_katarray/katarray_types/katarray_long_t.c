@@ -21,7 +21,7 @@ void *malloc_wrapper(size_t size, const char* function_name);
 
 // prints all elements
 // if option > 0: then display index.
-void katarray_long_length_print(katarray_long_t *KatArray, long option) {
+void katarray_long_length_print(katarray_long_t *KatArray, char option) {
     if (option > 0) {
         // index
         printf(GRAY" ");
