@@ -561,7 +561,7 @@ unsigned int katarray_uint_remove_overwrite_at(katarray_uint_t **KatArray, size_
 void katarray_uint_reset(katarray_uint_t **KatArray, size_t length, size_t capacity) {
 
     katarray_uint_t *temp_ptr = katarray_uint_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
-    katarray_uint_free();
+    katarray_uint_free(*KatArray);
     *KatArray = temp_ptr
     return;
 }

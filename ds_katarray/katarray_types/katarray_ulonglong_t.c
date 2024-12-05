@@ -562,7 +562,7 @@ unsigned long long katarray_ulonglong_remove_overwrite_at(katarray_ulonglong_t *
 void katarray_ulonglong_reset(katarray_ulonglong_t **KatArray, size_t length, size_t capacity) {
 
     katarray_ulonglong_t *temp_ptr = katarray_ulonglong_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
-    katarray_ulonglong_free();
+    katarray_ushort_free(*KatArray);
     *KatArray = temp_ptr
     return;
 }

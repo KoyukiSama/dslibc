@@ -560,7 +560,7 @@ double katarray_double_remove_overwrite_at(katarray_double_t **KatArray, size_t 
 void katarray_double_reset(katarray_double_t **KatArray, size_t length, size_t capacity) {
 
     katarray_double_t *temp_ptr = katarray_double_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
-    katarray_double_free();
+    katarray_double_free(*KatArray);
     *KatArray = temp_ptr
     return;
 }

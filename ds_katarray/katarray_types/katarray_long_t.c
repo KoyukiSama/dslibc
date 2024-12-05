@@ -562,7 +562,7 @@ long katarray_long_remove_overwrite_at(katarray_long_t **KatArray, size_t index)
 void katarray_long_reset(katarray_long_t **KatArray, size_t length, size_t capacity) {
 
     katarray_long_t *temp_ptr = katarray_long_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
-    katarray_long_free();
+    katarray_long_free(*KatArray);
     *KatArray = temp_ptr
     return;
 }

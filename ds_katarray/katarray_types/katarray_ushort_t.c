@@ -561,7 +561,9 @@ unsigned short katarray_ushort_remove_overwrite_at(katarray_ushort_t **KatArray,
 void katarray_ushort_reset(katarray_ushort_t **KatArray, size_t length, size_t capacity) {
 
     katarray_ushort_t *temp_ptr = katarray_ushort_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
-    katarray_ushort_free();
+    
+    katarray_voidp_free(*KatArray);
+
     *KatArray = temp_ptr
     return;
 }

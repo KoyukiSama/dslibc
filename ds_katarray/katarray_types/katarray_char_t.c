@@ -561,9 +561,9 @@ char katarray_char_remove_overwrite_at(katarray_char_t **KatArray, size_t index)
 void katarray_char_reset(katarray_char_t **KatArray, size_t length, size_t capacity) {
 
     katarray_char_t *temp_ptr = katarray_char_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
-    katarray_char_free();
+    katarray_char_free(*KatArray);
     *KatArray = temp_ptr
-    
+
     return;
 }
 

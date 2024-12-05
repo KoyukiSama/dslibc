@@ -559,15 +559,9 @@ float katarray_float_remove_overwrite_at(katarray_float_t **KatArray, size_t ind
 
 // remove / resest the whole array
 void katarray_float_reset(katarray_float_t **KatArray, size_t length, size_t capacity) {
-    *KatArray = katarray_float_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
-    return;
-}
-
-// remove / resest the whole array
-void katarray_float_reset(katarray_float_t **KatArray, size_t length, size_t capacity) {
 
     katarray_float_t *temp_ptr = katarray_float_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
-    katarray_float_free();
+    katarray_float_free(*KatArray);
     *KatArray = temp_ptr
     return;
 }
