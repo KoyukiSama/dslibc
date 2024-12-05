@@ -558,10 +558,12 @@ int katarray_int_remove_overwrite_at(katarray_int_t **KatArray, size_t index) {
 
 // remove / resest the whole array
 void katarray_int_reset(katarray_int_t **KatArray, size_t length, size_t capacity) {
-    *KatArray = katarray_int_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+
+    katarray_int_t *temp_ptr = katarray_int_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+    katarray_int_free();
+    *KatArray = temp_ptr
     return;
 }
-
 
 //// getters
 

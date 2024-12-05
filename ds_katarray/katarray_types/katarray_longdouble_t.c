@@ -559,10 +559,12 @@ long double katarray_longdouble_remove_overwrite_at(katarray_longdouble_t **KatA
 
 // remove / resest the whole array
 void katarray_longdouble_reset(katarray_longdouble_t **KatArray, size_t length, size_t capacity) {
-    *KatArray = katarray_longdouble_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+
+    katarray_longdouble_t *temp_ptr = katarray_longdouble_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+    katarray_longdouble_free();
+    *KatArray = temp_ptr
     return;
 }
-
 
 //// getters
 

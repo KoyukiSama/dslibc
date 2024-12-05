@@ -559,10 +559,12 @@ unsigned char katarray_uchar_remove_overwrite_at(katarray_uchar_t **KatArray, si
 
 // remove / resest the whole array
 void katarray_uchar_reset(katarray_uchar_t **KatArray, size_t length, size_t capacity) {
-    *KatArray = katarray_uchar_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+
+    katarray_uchar_t *temp_ptr = katarray_uchar_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+    katarray_uchar_free();
+    *KatArray = temp_ptr
     return;
 }
-
 
 //// getters
 

@@ -563,6 +563,15 @@ void katarray_float_reset(katarray_float_t **KatArray, size_t length, size_t cap
     return;
 }
 
+// remove / resest the whole array
+void katarray_float_reset(katarray_float_t **KatArray, size_t length, size_t capacity) {
+
+    katarray_float_t *temp_ptr = katarray_float_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+    katarray_float_free();
+    *KatArray = temp_ptr
+    return;
+}
+
 
 //// getters
 

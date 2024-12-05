@@ -559,10 +559,12 @@ short katarray_short_remove_overwrite_at(katarray_short_t **KatArray, size_t ind
 
 // remove / resest the whole array
 void katarray_short_reset(katarray_short_t **KatArray, size_t length, size_t capacity) {
-    *KatArray = katarray_short_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+
+    katarray_short_t *temp_ptr = katarray_short_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+    katarray_short_free();
+    *KatArray = temp_ptr
     return;
 }
-
 
 //// getters
 

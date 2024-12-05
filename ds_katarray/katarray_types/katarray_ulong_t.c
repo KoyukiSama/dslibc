@@ -559,10 +559,12 @@ unsigned long katarray_ulong_remove_overwrite_at(katarray_ulong_t **KatArray, si
 
 // remove / resest the whole array
 void katarray_ulong_reset(katarray_ulong_t **KatArray, size_t length, size_t capacity) {
-    *KatArray = katarray_ulong_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+
+    katarray_ulong_t *temp_ptr = katarray_ulong_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
+    katarray_ulong_free();
+    *KatArray = temp_ptr
     return;
 }
-
 
 //// getters
 
