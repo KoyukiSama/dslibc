@@ -564,7 +564,7 @@ void katarray_ushort_reset(katarray_ushort_t **KatArray, size_t length, size_t c
     
     katarray_voidp_free(*KatArray);
 
-    *KatArray = temp_ptr
+    *KatArray = temp_ptr;
     return;
 }
 

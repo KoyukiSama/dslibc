@@ -562,7 +562,7 @@ void katarray_longdouble_reset(katarray_longdouble_t **KatArray, size_t length, 
 
     katarray_longdouble_t *temp_ptr = katarray_longdouble_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
     katarray_longdouble_free(*KatArray);
-    *KatArray = temp_ptr
+    *KatArray = temp_ptr;
     return;
 }
 

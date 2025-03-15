@@ -562,7 +562,7 @@ void katarray_ulong_reset(katarray_ulong_t **KatArray, size_t length, size_t cap
 
     katarray_ulong_t *temp_ptr = katarray_ulong_create(length, (*KatArray)->initial_value, capacity, (*KatArray)->shrinkable);
     katarray_ulong_free(*KatArray);
-    *KatArray = temp_ptr
+    *KatArray = temp_ptr;
     return;
 }
 
